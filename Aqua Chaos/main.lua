@@ -17,7 +17,7 @@ local box1
 function love.load()
   love.graphics.setDefaultFilter("nearest", "nearest")
 
-  camera = Camera.Create(0, 0, 4)
+  camera = Camera.Create(0, 0, 1)
   collision_manager = Collision_Manager.Create()
 
   player = Player.Create(Draw, Velocity, physics, Collider, collision_manager)
