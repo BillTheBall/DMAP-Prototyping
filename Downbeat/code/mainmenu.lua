@@ -8,6 +8,7 @@ function mainmenu:load()
     local MainButtonHeight = 100
     MouseX = 1
     MouseY = 0
+    Score = 0
     BeatX = ScreenWidth - ScreenWidth/2 - MainButtonWidth + 150
     BeatX2 = ScreenWidth - ScreenWidth/2 + 150
     BeatY = ScreenHeight - ScreenHeight/2 - 50
@@ -17,6 +18,14 @@ function mainmenu:load()
     --Libraries--
     wf = require "windfield"
     world = wf.newWorld(0, 0)
+    world:addCollisionClass('Everything')
+    world:addCollisionClass('Reorient')
+    world:addCollisionClass('Fixed')
+    world:addCollisionClass('TriggerBeat')
+    world:addCollisionClass('TriggerBeatR')
+    world:addCollisionClass('TriggerBeatL')
+    world:addCollisionClass('Beat', {ignores = {'Reorient', 'TriggerBeat', 'TriggerBeatR', 'TriggerBeatL', 'Beat'}})
+
     Beat = world:newRectangleCollider(BeatX, BeatY, MainButtonWidth, MainButtonHeight)
 end
 
