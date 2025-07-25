@@ -4,22 +4,13 @@ local angle
 local bulletDx = 0
 local bulletDy = 0
 function Beats:load()
-	bulletSpeed = 3700
+	bulletSpeed = 6525
 	
 	bullets = {}
 	player = {x=250, y=250, width=15, height=15}
     straightened = false
 
     timed = 0 
-end
-
-function Beats:draw()
-	love.graphics.rectangle("line",  Beat1SpawnX - player.width/2, Beat1SpawnY + player.height, player.width, player.height)
-	
-	love.graphics.setColor(0.5, 0.5, 0.5)
-	for i,v in ipairs(bullets) do
-		-- love.graphics.circle("line", v.x, v.y, 75)
-	end
 end
 
 function Beats:update(dt)
@@ -35,20 +26,20 @@ function Beats:update(dt)
         end
 
         if v.dead and not v.targetted then 
-            if v.x < 700 then
-                v.collider:setPosition(635, v.y)
-            elseif v.x > 1200 then 
-                v.collider:setPosition(1300, v.y)
+            if v.x < 900 then
+                v.collider:setPosition(835, v.y)
+            elseif v.x > 1400 then 
+                v.collider:setPosition(1500, v.y)
             else 
-                v.collider:setPosition(960, v.y)
+                v.collider:setPosition(1160, v.y)
             end
         elseif v.targetted then
-            if v.x < 700 then
-                v.collider:setPosition(635, v.y)
-            elseif v.x > 1200 then 
-                v.collider:setPosition(1300, v.y)
+            if v.x < 900 then
+                v.collider:setPosition(835, v.y)
+            elseif v.x > 1400 then 
+                v.collider:setPosition(1500, v.y)
             else 
-                v.collider:setPosition(960, v.y)
+                v.collider:setPosition(1160, v.y)
             end
         end 
         
@@ -64,6 +55,8 @@ function Beats:update(dt)
             v.dead = true
             angle = math.rad(90)
         end
+
+
         if v.collider:enter('TriggerBeat') then
             v.targetted = true
         end
@@ -74,19 +67,72 @@ function Beats:update(dt)
             v.targettedL = true
         end
 
-        if love.mouse.isDown("3") then
+        if v.collider:enter('TriggerBeatScoreZone1') then
+            v.score1 = true
+        end
+        if v.collider:exit('TriggerBeatScoreZone1') then
+            v.score1 = false
+        end
+        if v.collider:enter('TriggerBeatScoreZone2') then
+            v.score2 = true
+        end
+        if v.collider:exit('TriggerBeatScoreZone2') then
+            v.score2 = false
+        end
+        if v.collider:enter('TriggerBeatScoreZone3') then
+            v.score3 = true
+        end
+        if v.collider:exit('TriggerBeatScoreZone3') then
+            v.score3 = false
+        end
+        if v.collider:enter('TriggerBeatScoreZone4') then
+            v.score4 = true
+        end
+        if v.collider:exit('TriggerBeatScoreZone4') then
+            v.score4 = false
+        end
+        if v.collider:enter('TriggerBeatScoreZone5') then
+            v.score5 = true
+        end
+        if v.collider:enter('TriggerBeatScoreZone6') then
+            v.score1 = false
+            v.score2 = false
+            v.score3 = false
+            v.score4 = false
+            v.score5 = false
+        end
+        if v.collider:exit('TriggerBeatScoreZone5') then
+            v.score5 = false
+        end
+
+        if clickedDown3 then
             if v.targetted then
+                if v.score1 then
+                    Score = Score + ((MaximumScore/ClicksRequired) * 0.1)
+                    if v.score2 then
+                        Score = Score + ((MaximumScore/ClicksRequired) * 0.2)
+                        if v.score3 then
+                            Score = Score + ((MaximumScore/ClicksRequired) * 0.3)
+                            if v.score4 then
+                                Score = Score + ((MaximumScore/ClicksRequired) * 0.3)
+                                if v.score5 then
+                                    Score = Score + ((MaximumScore/ClicksRequired) * 0.1)
+                                end
+                            end
+                        end
+                    end
+                end
                 v.collider:destroy()
                 table.remove(bullets, i)
             end
-            clickedDown3 = true
-        elseif love.mouse.isDown("2") then
+        end
+        if clickedDown2 then
             if v.targettedR then
                 v.collider:destroy()
                 table.remove(bullets, i)
             end
-            clickedDown2 = true
-        elseif clickedDown1 then
+        end
+        if clickedDown1 then
             if v.targettedL then
                 v.collider:destroy()
                 table.remove(bullets, i)
@@ -95,15 +141,23 @@ function Beats:update(dt)
 
 
         -- Remove bullets below threshold
-        if v.y > 1080 then
+        if v.y > 1010 then
             v.collider:destroy()
             table.remove(bullets, i)
         end
     end
 end
 
+
+function Beats:draw()
+	love.graphics.setColor(0.5, 0.5, 0.5)
+	for i,v in ipairs(bullets) do
+		love.graphics.circle("line", v.collider:getX(), v.collider:getY(), 75)
+	end
+end
+
 function Beats:spawnBullet(direction)
-    local startX = Beat1SpawnX + player.width / 2
+    local startX = Beat1SpawnX - player.width/2 + 200
     local startY = Beat1SpawnY + player.height / 2
 
     -- Choose target angle based on string
@@ -118,7 +172,7 @@ function Beats:spawnBullet(direction)
     bulletDx = bulletSpeed * math.cos(angle)
     bulletDy = bulletSpeed * math.sin(angle)
 
-    local beatCollider = world:newCircleCollider(startX, startY, 80)
+    local beatCollider = world:newCircleCollider(startX, startY, 10)
     beatCollider:setCollisionClass("Beat")
 
     beatCollider:setSensor(false)         -- allow physical collision if needed

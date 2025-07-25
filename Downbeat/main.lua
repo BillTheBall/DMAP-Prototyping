@@ -14,7 +14,11 @@ function love.load()
     clickedDown2 = false
     clickedDown3 = false
     abilitytoClickDown1 = true
-    countered = 0
+    abilitytoClickDown2 = true
+    abilitytoClickDown3 = true
+    countered1 = 0
+    countered2 = 0
+    countered3 = 0
     Scene = 0
     love.graphics.setDefaultFilter("nearest", "nearest")
     
@@ -32,7 +36,7 @@ function love.update(dt)
     end
 
     FRAMERATE = love.timer.getFPS()
-    accumulator = accumulator + dt
+    accumulator = accumulator + 1 * dt
     if accumulator >= tickPeriod then
         if Scene == 0 then
             mainmenu:update(dt) 
@@ -42,23 +46,50 @@ function love.update(dt)
         end
 
     if not abilitytoClickDown1  then
-        countered = countered + 1 * dt
+        countered1 = countered1 + 1 * dt
         clickedDown1 = false
     end
-    if countered > 0.01 then
+    if countered1 > 0.01 then
         abilitytoClickDown1 = true
         clickedDown1 = false
         countered = 0
     end
+
+    if not abilitytoClickDown2  then
+        countered2 = countered2 + 1 * dt
+        clickedDown2 = false
+    end
+    if countered2 > 0.01 then
+        abilitytoClickDown2 = true
+        clickedDown2 = false
+        countered2 = 0
+    end
+
+    if not abilitytoClickDown3  then
+        countered3 = countered3 + 1 * dt
+        clickedDown3 = false
+    end
+    if countered3 > 0.01 then
+        abilitytoClickDown3 = true
+        clickedDown3 = false
+        countered3 = 0
+    end
+
+
         accumulator = accumulator - tickPeriod
         counter = counter + 1
     end
-
 
     function love.mousepressed( x, y, button, istouch, presses )
     if button == 1 and abilitytoClickDown1 then
         clickedDown1 = true
         abilitytoClickDown1 = false
+    elseif button == 2 and abilitytoClickDown2 then
+        clickedDown2 = true
+        abilitytoClickDown2 = false
+    elseif button == 3 and abilitytoClickDown3 then
+        clickedDown3 = true
+        abilitytoClickDown3 = false
     end
 end
 end

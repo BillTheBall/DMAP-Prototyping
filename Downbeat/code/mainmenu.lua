@@ -8,7 +8,6 @@ function mainmenu:load()
     local MainButtonHeight = 100
     MouseX = 1
     MouseY = 0
-    Score = 0
     BeatX = ScreenWidth - ScreenWidth/2 - MainButtonWidth + 150
     BeatX2 = ScreenWidth - ScreenWidth/2 + 150
     BeatY = ScreenHeight - ScreenHeight/2 - 50
@@ -21,10 +20,17 @@ function mainmenu:load()
     world:addCollisionClass('Everything')
     world:addCollisionClass('Reorient')
     world:addCollisionClass('Fixed')
-    world:addCollisionClass('TriggerBeat')
+
+    world:addCollisionClass('TriggerBeatScoreZone1', {ignores = {'TriggerBeatScoreZone1'}})
+    world:addCollisionClass('TriggerBeatScoreZone2', {ignores = {'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2'}})
+    world:addCollisionClass('TriggerBeatScoreZone3', {ignores = {'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2', 'TriggerBeatScoreZone3'}})
+    world:addCollisionClass('TriggerBeatScoreZone4', {ignores = {'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2', 'TriggerBeatScoreZone3', 'TriggerBeatScoreZone4'}})
+    world:addCollisionClass('TriggerBeatScoreZone5', {ignores = {'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2', 'TriggerBeatScoreZone3', 'TriggerBeatScoreZone4', 'TriggerBeatScoreZone5'}})
+    world:addCollisionClass('TriggerBeatScoreZone6', {ignores = {'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2', 'TriggerBeatScoreZone3', 'TriggerBeatScoreZone4', 'TriggerBeatScoreZone5', 'TriggerBeatScoreZone6'}})
+    world:addCollisionClass('TriggerBeat', {ignores = {'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2', 'TriggerBeatScoreZone3', 'TriggerBeatScoreZone4', 'TriggerBeatScoreZone5', 'TriggerBeatScoreZone6'}})
     world:addCollisionClass('TriggerBeatR')
     world:addCollisionClass('TriggerBeatL')
-    world:addCollisionClass('Beat', {ignores = {'Reorient', 'TriggerBeat', 'TriggerBeatR', 'TriggerBeatL', 'Beat'}})
+    world:addCollisionClass('Beat', {ignores = {'Reorient', 'TriggerBeat', 'TriggerBeatR', 'TriggerBeatL', 'Beat', 'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2', 'TriggerBeatScoreZone3', 'TriggerBeatScoreZone4', 'TriggerBeatScoreZone5', 'TriggerBeatScoreZone6'}})
 
     Beat = world:newRectangleCollider(BeatX, BeatY, MainButtonWidth, MainButtonHeight)
 end
