@@ -39,16 +39,22 @@ entety_Combat.isGood = nil
 entety_Combat.currentHealth = 10
 entety_Combat.maxHealth = 20
 entety_Combat.currentSpeed = 10
+
 function entety_Combat:moveEntety(x,y)
   --Removes itselfs from the tile its standing on
+  combatGird[self.pos.x][self.pos.y].objectOnTile = nil
   self.pos.x = x
   self.pos.y = y
+  combatGird[self.pos.x][self.pos.y].objectOnTile = self
 end
 
 function entety_Combat:dealDamage(damageToDeal, attacker)
   if(attacker.isGood == self.isGood) then
     --In this case, its friendly fire
     print("ff!")
+    print("uhu", huhuhuhuhuhuVprasaj)
+    
+    entety_Combat:a()
   else
     if(damageToDeal > 0) then
     --if damage is 0 or less, nothing happens
@@ -58,7 +64,9 @@ function entety_Combat:dealDamage(damageToDeal, attacker)
   end
 
 end
-
+function entety_Combat.a()
+  print("uhu", huhuhuhuhuhuVprasaj)
+end
 function entety_Combat:heal(amountToHeal)
   if(damageToDeal > 0) then
     --if heal is 0 or less, nothing happens

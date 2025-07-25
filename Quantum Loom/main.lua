@@ -41,14 +41,7 @@ function love.keypressed(key)
       --print("Move")
       
       if(isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, getSelectedTile().pos.x, getSelectedTile().pos.y, 2) and combatGird[getSelectedTile().pos.x][getSelectedTile().pos.y].objectOnTile == nil) then
-        --print("Move")
-        
-        combatGird[selectedChar.pos.x][selectedChar.pos.y].objectOnTile = nil
-        print("pos: " .. selectedChar.pos.x)
-        print("Moved to " .. selectedChar.pos.x .." " .. selectedChar.pos.y)
         selectedChar:moveEntety(getSelectedTile().pos.x, getSelectedTile().pos.y)
-        
-        combatGird[selectedChar.pos.x][selectedChar.pos.y].objectOnTile = selectedChar
       end
     end
     if(key == "2") then
