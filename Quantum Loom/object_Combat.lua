@@ -14,7 +14,7 @@ object_Combat =
 function object_Combat:new()
   o =  
   {
-      pos = {x = 1, y = 1},
+      pos = {x = 1, y = 3},
       --codeName= "baseObject",
       --sprite = love.graphics.newImage("sprites/tile.png"),
       --tags = {},
@@ -38,7 +38,7 @@ entety_Combat.codeName = "abstract!"
 entety_Combat.isGood = nil
 entety_Combat.currentHealth = 10
 entety_Combat.maxHealth = 20
-
+entety_Combat.currentSpeed = 10
 function entety_Combat:moveEntety(x,y)
   --Removes itselfs from the tile its standing on
   self.pos.x = x
@@ -53,7 +53,7 @@ function entety_Combat:dealDamage(damageToDeal, attacker)
     if(damageToDeal > 0) then
     --if damage is 0 or less, nothing happens
     self.currentHealth = self.currentHealth - damageToDeal
-    print("dealt " .. damageToDeal .. " damage")
+    print("dealt " .. damageToDeal .. " damage to " .. self.codeName)
     end
   end
 
@@ -77,3 +77,7 @@ enemy_Combat.codeName = "enemy"
 char_Combat = entety_Combat:new()
 char_Combat.isGood = true
 char_Combat.codeName = "char"
+
+char_Combat.fullDeck = {}
+char_Combat.currentDeck = {}
+char_Combat.currentGY = {}
