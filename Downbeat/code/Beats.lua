@@ -150,7 +150,7 @@ end
 
 
 function Beats:draw()
-	love.graphics.setColor(0.5, 0.5, 0.5)
+	love.graphics.setColor(1, 0, 0)
 	for i,v in ipairs(bullets) do
 		love.graphics.circle("line", v.collider:getX(), v.collider:getY(), 75)
 	end

@@ -103,6 +103,8 @@ function love.draw()
         rhythmlevelone:draw() 
         Beats:draw()
     end
+
+    love.graphics.setColor(1, 1, 1)
     love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
     love.graphics.print(tostring(counter), 10, 35)
 end
