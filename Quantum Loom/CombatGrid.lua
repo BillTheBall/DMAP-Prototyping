@@ -31,7 +31,8 @@ function getTilesInSquareRange(centerX, centerY, range)
         for j = centerX - range, centerX + range do
             -- Make sure we're within bounds of the grid
             if combatGird[i] and combatGird[i][j] then
-                table.insert(tiles, combatGird[i][j])
+                table.insert(tiles, combatGird[j][i])
+                --print("x:", i, "y:", j)
             end
         end
     end

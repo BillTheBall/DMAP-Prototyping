@@ -52,9 +52,6 @@ function entety_Combat:dealDamage(damageToDeal, attacker)
   if(attacker.isGood == self.isGood) then
     --In this case, its friendly fire
     print("ff!")
-    print("uhu", huhuhuhuhuhuVprasaj)
-    
-    entety_Combat:a()
   else
     if(damageToDeal > 0) then
     --if damage is 0 or less, nothing happens
@@ -63,9 +60,6 @@ function entety_Combat:dealDamage(damageToDeal, attacker)
     end
   end
 
-end
-function entety_Combat.a()
-  print("uhu", huhuhuhuhuhuVprasaj)
 end
 function entety_Combat:heal(amountToHeal)
   if(damageToDeal > 0) then
@@ -89,3 +83,18 @@ char_Combat.codeName = "char"
 char_Combat.fullDeck = {}
 char_Combat.currentDeck = {}
 char_Combat.currentGY = {}
+char_Combat.currentHand = {}
+
+function char_Combat:shuffleDeck()
+  for i = #self.currentDeck, 2, -1 do
+    local j = math.random(i)
+    self.currentDeck[i], self.currentDeck[j] = self.currentDeck[j], self.currentDeck[i]
+  end
+end
+
+--char_Tank is a class for the tank char. Since this is a prototype, i don't have a name for them yet..
+char_Tank = char_Combat:new()
+char_Tank.fullDeck = 
+{
+    
+}

@@ -1,11 +1,11 @@
 local miiui = require "Miiui.Miiui"
 require "object_Combat"
 require "CombatGrid"
-
+require "card_Combat"
 function love.load()
   io.stdout:setvbuf("no")
-  p1 = char_Combat:new()
-  p2 = char_Combat:new()
+  p1 = char_Tank:new()
+  p2 = char_Tank:new()
   enemy = enemy_Combat:new()
   p1.pos.x = 3
   p1.pos.y = 3
@@ -21,10 +21,13 @@ function love.load()
   combatGird[enemy.pos.x][enemy.pos.y].objectOnTile = enemy
   
   selectedChar = p2
+  granade = handGranade_Card:new()
+  print(granade.codeName)
+  --print("good?", p1.isGood)
 end
 function love.update(dt)
   miiui.update(dt)
-  
+  --print("x", enemy.pos.x, "y", enemy.pos.y)
 end
 
 function love.draw()
@@ -45,10 +48,9 @@ function love.keypressed(key)
       end
     end
     if(key == "2") then
-      if (isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, getSelectedTile().pos.x, getSelectedTile().pos.y, 2)) then
-        for _, tile in ipairs(getTilesInSquareRange(getSelectedTile().pos.x, getSelectedTile().pos.y, 3)) do
-          if(tile.objectOnTile) then tile.objectOnTile:dealDamage(10, selectedChar) end
-        end 
+      baseCard = baseCard:new()
+      if (baseCard:isTargetValid()) then
+        baseCard:onPlay()
       end
     end
 end
