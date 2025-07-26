@@ -23,8 +23,9 @@ function love.load()
   combatGird[enemy.pos.x][enemy.pos.y].objectOnTile = enemy
   
   selectedChar = p2
+  move = move_Card:new()
   granade = handGranade_Card:new()
-  print(granade.codeName)
+  print(granade:isTargetValid(), move.isTargetValid())
   --print("good?", p1.isGood)
 end
 function love.update(dt)
@@ -41,18 +42,15 @@ end
 function love.keypressed(key)
     miiui.keypressed(key)
     --print("pos: " .. selectedChar.pos.x)
-    
     if(key == "1") then
-      --print("Move")
-      
-      if(isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, getSelectedTile().pos.x, getSelectedTile().pos.y, 2) and combatGird[getSelectedTile().pos.x][getSelectedTile().pos.y].objectOnTile == nil) then
-        selectedChar:moveEntety(getSelectedTile().pos.x, getSelectedTile().pos.y)
+      if (move:isTargetValid()) then
+        move:onPlay()
       end
     end
+    
     if(key == "2") then
-      baseCard = baseCard:new()
-      if (baseCard:isTargetValid()) then
-        baseCard:onPlay()
+      if (granade:isTargetValid()) then
+        granade:onPlay()
       end
     end
 end

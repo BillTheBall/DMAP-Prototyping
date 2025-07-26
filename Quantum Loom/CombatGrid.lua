@@ -3,6 +3,7 @@ local gridWidth = 16
 local gridHeight = 12
 local tileWidth = 50
 local tileHeight = 50
+
 function getSelectedTile()
   local mouseX, mouseY = love.mouse.getPosition()
   local tileX = math.ceil(mouseX/tileWidth)
@@ -15,10 +16,10 @@ function getSelectedTile()
 end
 
 function isTileInSquareRange(centerX, centerY, x, y, range)
-  if(x <= centerX + range and x >= centerX - range and
-    y <= centerY + range and y >= centerY - range) then
-    return true end
-  return false
+ -- print(x,y,centerX,centerY,x <= centerX + range and x >= centerX - range and
+--    y <= centerY + range and y >= centerY - range)
+  return (x <= centerX + range and x >= centerX - range and
+    y <= centerY + range and y >= centerY - range) 
 end
 
 function isTileInCircleRange(centerX, centerY, x, y, range)
@@ -27,6 +28,7 @@ function isTileInCircleRange(centerX, centerY, x, y, range)
   end
   return false
 end
+
 function getTilesInSquareRange(centerX, centerY, range)
     local tiles = {}
 
@@ -63,7 +65,7 @@ end
 function CombatGrid:draw()
     for i = 1, gridWidth do
       for j = 1, gridHeight do
-        if(isTileInSquareRange(selectedChar.pos.x,selectedChar.pos.y,i,j,2) == true and (selectedChar.pos.x ~= i or selectedChar.pos.y~=j)) then 
+        if (isTileInSquareRange(selectedChar.pos.x,selectedChar.pos.y,i,j,2) == true and (selectedChar.pos.x ~= i or selectedChar.pos.y~=j)) then 
           love.graphics.setColor(0,1,0)
         else love.graphics.setColor(1,1,1)
        end
