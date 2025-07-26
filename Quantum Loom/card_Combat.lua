@@ -14,13 +14,19 @@ function baseCard:new()
   return o
 end
 function baseCard:onPlay()
-  for _, tile in ipairs(getTilesInSquareRange(getSelectedTile().pos.x, getSelectedTile().pos.y, 1)) do
-    if(tile.objectOnTile) then tile.objectOnTile:dealDamage(10, selectedChar) end
+  local areaDamage = 10
+  local areaRange = 1
+  for _, tile in ipairs(getTilesInSquareRange(getSelectedTile().pos.x, getSelectedTile().pos.y, areaRange)) do
+    if(tile.objectOnTile) then tile.objectOnTile:dealDamage(areaDamage, selectedChar) end
  end
 end
 function baseCard:isTargetValid()
-  return isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, getSelectedTile().pos.x, getSelectedTile().pos.y, 2)
+  local range = 2
+  return isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, getSelectedTile().pos.x, getSelectedTile().pos.y, range)
 end
 
 handGranade_Card = baseCard:new()
 handGranade_Card.codeName = "kaboom"
+function handGranade_Card:onPlay()
+  
+end

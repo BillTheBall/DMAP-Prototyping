@@ -15,7 +15,9 @@ function love.load()
   p2.pos.y = 9
   huhuhuhuhuhuVprasaj = 32333435
   CombatGrid = require "CombatGrid"
+  
   CombatGrid:Load()
+  
   combatGird[p2.pos.x][p2.pos.y].objectOnTile = p2
   combatGird[p1.pos.x][p1.pos.y].objectOnTile = p1
   combatGird[enemy.pos.x][enemy.pos.y].objectOnTile = enemy

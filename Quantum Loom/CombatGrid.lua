@@ -1,12 +1,15 @@
 CombatGrid = {}
-
+local gridWidth = 16
+local gridHeight = 12
+local tileWidth = 50
+local tileHeight = 50
 function getSelectedTile()
   local mouseX, mouseY = love.mouse.getPosition()
-  local tileX = math.ceil(mouseX/50)
-  local tileY = math.ceil(mouseY/50)
-  if tileX > 16 then tileX = 16 end
+  local tileX = math.ceil(mouseX/tileWidth)
+  local tileY = math.ceil(mouseY/tileHeight)
+  if tileX > gridWidth then tileX = gridWidth end
   if tileX < 1 then tileX = 1 end
-  if tileY > 12 then tileY = 12 end
+  if tileY > gridHeight then tileY = gridHeight end
   if tileY < 1 then tileY = 1 end
   return combatGird[tileX][tileY]
 end
@@ -42,28 +45,25 @@ end
 --capital cuz load is some buildin func idk
 function CombatGrid:Load()
   combatGird = {}
-  for i = 1, 16 do
+  for i = 1, gridWidth do
     local combatRow = {}
-    for j = 1, 12 do
+    for j = 1, gridHeight do
         local tile = emptyTile_Combat:new()
         tile.pos = { x = i, y = j }
         table.insert(combatRow, tile)
     end
     table.insert(combatGird, combatRow)
   end
-  for i = 1, 16 do
-      for j = 1, 12 do
+  for i = 1, gridWidth do
+      for j = 1, gridHeight do
         --print(combatGird[i][j].codeName .. " " .. j .. " " .. i)
       end
   end
-  for _, tile in ipairs(getTilesInSquareRange(2,2,1)) do
-    --print("x:" .. tile.pos.x .. "y:" .. tile.pos.y)
-  end 
 end
 function CombatGrid:draw()
-    for i = 1, 16 do
-      for j = 1, 12 do
-        if(isTileInSquareRange(selectedChar.pos.x,selectedChar.pos.y,i,j,2) == true and (selectedChar.pos.x ~= i or selectedChar.pos.y~=j))       then 
+    for i = 1, gridWidth do
+      for j = 1, gridHeight do
+        if(isTileInSquareRange(selectedChar.pos.x,selectedChar.pos.y,i,j,2) == true and (selectedChar.pos.x ~= i or selectedChar.pos.y~=j)) then 
           love.graphics.setColor(0,1,0)
         else love.graphics.setColor(1,1,1)
        end
@@ -81,9 +81,9 @@ function CombatGrid:draw()
         end
         
         --end
-        love.graphics.rectangle("fill", (i-1)*50, (j-1)*50, 50, 50)
+        love.graphics.rectangle("fill", (i-1)*50, (j-1)*50, tileWidth, tileHeight)
         love.graphics.setColor(0,0,0)
-        love.graphics.print(combatGird[i][j].pos.x .. " " .. combatGird[i][j].pos.y , (i-1)*50, (j-1)*50)
+        love.graphics.print(combatGird[i][j].pos.x .. " " .. combatGird[i][j].pos.y , (i-1)*tileWidth, (j-1)*tileHeight)
       end
     end
 end
