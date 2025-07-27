@@ -1,4 +1,4 @@
-local Miiui = require "Miiui"
+local Miiui = require "Miiui.Miiui"
 
 local state = {
     showSidePanel = false,

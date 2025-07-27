@@ -24,6 +24,7 @@ function love.load()
   combatGrid[p1.pos.x][p1.pos.y].objectOnTile = p1
   combatGrid[enemy.pos.x][enemy.pos.y].objectOnTile = enemy
   
+  inspectingObject = p2
   selectedChar = p2
   move = move_Card:new()
   granade = handGranade_Card:new()
@@ -41,7 +42,7 @@ end
 function love.draw()
     miiui.begin()
     love.graphics.setColor(1,1,1)
-    love.graphics.print(selectedChar:getDebugText(), 900, 50)
+    if(inspectingObject) then love.graphics.print(inspectingObject:getDebugText(), 900, 50) end
     love.graphics.setColor(0,0,0)
     CombatGrid:draw()
     miiui.end_frame()
@@ -50,27 +51,15 @@ end
 function love.keypressed(key)
     miiui.keypressed(key)
     --print("pos: " .. selectedChar.pos.x)
-    if(key == "1") then
-      if (selectedChar.fullDeck[1]:isTargetValid()) then
-        selectedChar.fullDeck[1]:onPlay()
-      end
+    if(tonumber(key) and tonumber(key) <= #selectedChar.currentHand) then
+      selectedChar.cardToBePlayed = selectedChar.currentHand[tonumber(key)]
     end
-    
-    if(key == "2") then
-      if (selectedChar.fullDeck[2]:isTargetValid()) then
-        selectedChar.fullDeck[2]:onPlay()
-      end
-    end
-    
-    if(key == "3" and selectedChar.fullDeck[3]) then
-      if (selectedChar.fullDeck[3]:isTargetValid()) then
-        selectedChar.fullDeck[3]:onPlay()
-      end
-    end
-    
     if(key == "d") then 
       selectedChar:drawCard(1)
     end
+    if (key == "return" and selectedChar.cardToBePlayed and selectedChar.cardToBePlayed:isTargetValid()) then
+        selectedChar.cardToBePlayed:onPlay()
+      end
 end
 
 function love.textinput(text)
@@ -79,7 +68,10 @@ end
 
 function love.mousepressed(x, y, button)
   -- 1: right, 2: left, 3: middle, 4&5: side
-  if(getSelectedTile().objectOnTile and button == 1) then
-    if(getSelectedTile().objectOnTile.isGood) then getSelectedTile().objectOnTile:selectChar() end
+  if(getSelectedTile().objectOnTile and button == 1 and getSelectedTile().objectOnTile.isGood) then
+    getSelectedTile().objectOnTile:selectChar()
+  end
+  if(getSelectedTile().objectOnTile and button == 2) then
+    inspectingObject = getSelectedTile().objectOnTile
   end
 end

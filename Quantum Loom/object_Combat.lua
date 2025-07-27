@@ -46,10 +46,12 @@ entety_Combat.maxHealth = 20
 entety_Combat.baseSpeed = 5
 function entety_Combat:moveEntety(x,y)
   --Removes itselfs from the tile its standing on
-  combatGrid[self.pos.x][self.pos.y].objectOnTile = nil
-  self.pos.x = x
-  self.pos.y = y
-  combatGrid[self.pos.x][self.pos.y].objectOnTile = self
+  if(combatGrid[x][y].objectOnTile == nil) then
+    combatGrid[self.pos.x][self.pos.y].objectOnTile = nil
+    self.pos.x = x
+    self.pos.y = y
+    combatGrid[self.pos.x][self.pos.y].objectOnTile = self
+  end
 end
 
 function entety_Combat:dealDamage(damageToDeal, attacker)
@@ -79,16 +81,22 @@ enemy_Combat = entety_Combat:new()
 enemy_Combat.isGood = false
 enemy_Combat.codeName = "enemy"
 
+function enemy_Combat:getDebugText()
+  return "Code Name: " .. self.codeName .. "\n" ..
+         "Current Health: " .. self.currentHealth .. "\tMax Health: " .. self.maxHealth .. "\n" ..
+         "Current Speed: " .. self.currentSpeed .. "\tBase Speed: " .. self.baseSpeed .. "\n" ..
+         "Current Shield: " .. self.currentShield .. "\n\n"  
+end
 --char_Combat
 char_Combat = entety_Combat:new()
 char_Combat.isGood = true
 char_Combat.codeName = "char"
 
---char_Combat.fullDeck = {}
---char_Combat.currentDeck = {}
---char_Combat.currentGY = {}
---char_Combat.currentHand = {}
---char_Combat.cardToBePlayed = nil
+char_Combat.fullDeck = {}
+char_Combat.currentDeck = {}
+char_Combat.currentGY = {}
+char_Combat.currentHand = {}
+char_Combat.cardToBePlayed = nil
 function char_Combat:shuffleDeck()
   for i = #self.currentDeck, 2, -1 do
     local j = math.random(i)

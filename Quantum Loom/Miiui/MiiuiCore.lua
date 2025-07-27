@@ -1,6 +1,6 @@
 -- MiiuiCore.lua
 local MiiuiCore = {}
-local MiiuiTween = require "MiiuiTween"
+local MiiuiTween = require "Miiui.MiiuiTween"
 
 MiiuiCore.state = {
     mouseX = 0,

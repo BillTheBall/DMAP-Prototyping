@@ -25,9 +25,12 @@ end
 
 handGranade_Card = baseCard:new()
 handGranade_Card.codeName = "kaboom"
-function handGranade_Card:isTargetValid()
+function handGranade_Card:isTargetValid(x,y)
+  local targetX = x or getSelectedTile().pos.x
+  local targetY = y or getSelectedTile().pos.y
   local range = 2
-  return isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, getSelectedTile().pos.x, getSelectedTile().pos.y, range)
+  --print(isTileInSquareRange(9, 9, targetX, targetY, range))
+  return isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, targetX, targetY, range)
 end
 function handGranade_Card:onPlay()
   local areaDamage = 10
@@ -42,11 +45,18 @@ end
 move_Card = baseCard:new()
 move_Card.codeName = "move"
 
-function move_Card:isTargetValid()
+function move_Card:isTargetValid(x,y)
+  local targetX = x or getSelectedTile().pos.x
+  local targetY = y or getSelectedTile().pos.y
   local range = 2
-  return isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, getSelectedTile().pos.x, getSelectedTile().pos.y, range)
+  --print(isTileInSquareRange(9, 9, targetX, targetY, range))
+  return isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, targetX, targetY, range)
 end
-
+function move_Card:isTileValid(x, y)
+    local range = 2
+  --print(isTileInSquareRange(9, 9, targetX, targetY, range))
+  return isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, x, y, range)
+end
 function move_Card:onPlay()
   selectedChar:moveEntety(getSelectedTile().pos.x, getSelectedTile().pos.y)
 end
@@ -54,10 +64,12 @@ end
 quickHeal_Card = baseCard:new()
 quickHeal_Card.codeName = "quickHeal"
 
-function quickHeal_Card:isTargetValid()
+function quickHeal_Card:isTargetValid(x,y)
+  local targetX = x or getSelectedTile().pos.x
+  local targetY = y or getSelectedTile().pos.y
   local range = 4
   --Don't change the order. We are saving 1 if statment like this :stonks:
-  return isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, getSelectedTile().pos.x, getSelectedTile().pos.y, range) and getSelectedTile().objectOnTile and getSelectedTile().objectOnTile.isGood
+  return isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, targetX, targetY, range) and combatGrid[targetX][targetY].objectOnTile and combatGrid[targetX][targetY].objectOnTile.isGood
 end
 
 function quickHeal_Card:onPlay()

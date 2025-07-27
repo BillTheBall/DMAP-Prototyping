@@ -1,9 +1,9 @@
 -- Miiui.lua
-local MiiuiCore = require "MiiuiCore"
-local MiiuiWidgets = require "MiiuiWidgets"
-local MiiuiUtils = require "MiiuiUtils"
-local MiiuiTheme = require "MiiuiTheme"
-local MiiuiTween = require "MiiuiTween"
+local MiiuiCore = require "Miiui.MiiuiCore"
+local MiiuiWidgets = require "Miiui.MiiuiWidgets"
+local MiiuiUtils = require "Miiui.MiiuiUtils"
+local MiiuiTheme = require "Miiui.MiiuiTheme"
+local MiiuiTween = require "Miiui.MiiuiTween"
 
 local Miiui = {}
 
