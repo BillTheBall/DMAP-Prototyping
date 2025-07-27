@@ -11,7 +11,6 @@ function mainmenu:load()
 end
 
 function mainmenu:update(dt)
-
     MouseX = love.mouse.getX()
     MouseY = love.mouse.getY()
 

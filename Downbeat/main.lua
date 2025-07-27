@@ -1,3 +1,5 @@
+
+
 function love.load()
     -- Libraries --
     wf = require "windfield"
@@ -22,6 +24,7 @@ function love.load()
     countered2 = 0
     countered3 = 0
     Scene = 0
+    Volume = 1
     love.graphics.setDefaultFilter("nearest", "nearest")
         
     Watermark = love.graphics.newImage("Artisting/BTBStudiosIntroScreenWatermark.png")
@@ -44,6 +47,8 @@ function love.load()
     LayoutArrow = love.graphics.newImage("Artisting/LayoutArrowNormal.png")
     LayoutArrowFlipped = love.graphics.newImage("Artisting/LayoutArrow.png")
 
+    source = love.audio.newSource("StabbedAll.mp3", "stream")
+
     actualmainmenu:load()
     mainmenu:load() 
     rhythmlevelone:load() 
@@ -53,6 +58,9 @@ end
 
 -- Nope. Don't even ask me how, this just runs the logic at a consistent rate --
 function love.update(dt)
+    if not source:isPlaying( ) then
+		love.audio.play( source )
+	end
     timer = timer + dt
     if timer > 1 then
         counter = 0
