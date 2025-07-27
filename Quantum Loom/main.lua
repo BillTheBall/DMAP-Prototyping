@@ -4,7 +4,9 @@ require "CombatGrid"
 require "card_Combat"
 function love.load()
   io.stdout:setvbuf("no")
-  p1 = char_Tank:new()
+  love.window.setMode(1280, 720)
+  print(love.graphics.getHeight(), love.graphics.getWidth())
+  p1 = char_Support:new()
   p2 = char_Tank:new()
   enemy = enemy_Combat:new()
   p1.pos.x = 3
@@ -18,15 +20,18 @@ function love.load()
   
   CombatGrid:Load()
   
-  combatGird[p2.pos.x][p2.pos.y].objectOnTile = p2
-  combatGird[p1.pos.x][p1.pos.y].objectOnTile = p1
-  combatGird[enemy.pos.x][enemy.pos.y].objectOnTile = enemy
+  combatGrid[p2.pos.x][p2.pos.y].objectOnTile = p2
+  combatGrid[p1.pos.x][p1.pos.y].objectOnTile = p1
+  combatGrid[enemy.pos.x][enemy.pos.y].objectOnTile = enemy
   
   selectedChar = p2
   move = move_Card:new()
   granade = handGranade_Card:new()
-  print(granade:isTargetValid(), move.isTargetValid())
+  --p1.currentDeck = p1.fullDeck
+  --p2.currentDeck = p2.fullDeck
+  --print(granade:isTargetValid(), move.isTargetValid())
   --print("good?", p1.isGood)
+  --print(selectedChar:getDebugText())
 end
 function love.update(dt)
   miiui.update(dt)
@@ -35,6 +40,9 @@ end
 
 function love.draw()
     miiui.begin()
+    love.graphics.setColor(1,1,1)
+    love.graphics.print(selectedChar:getDebugText(), 900, 50)
+    love.graphics.setColor(0,0,0)
     CombatGrid:draw()
     miiui.end_frame()
 end
@@ -43,15 +51,25 @@ function love.keypressed(key)
     miiui.keypressed(key)
     --print("pos: " .. selectedChar.pos.x)
     if(key == "1") then
-      if (move:isTargetValid()) then
-        move:onPlay()
+      if (selectedChar.fullDeck[1]:isTargetValid()) then
+        selectedChar.fullDeck[1]:onPlay()
       end
     end
     
     if(key == "2") then
-      if (granade:isTargetValid()) then
-        granade:onPlay()
+      if (selectedChar.fullDeck[2]:isTargetValid()) then
+        selectedChar.fullDeck[2]:onPlay()
       end
+    end
+    
+    if(key == "3" and selectedChar.fullDeck[3]) then
+      if (selectedChar.fullDeck[3]:isTargetValid()) then
+        selectedChar.fullDeck[3]:onPlay()
+      end
+    end
+    
+    if(key == "d") then 
+      selectedChar:drawCard(1)
     end
 end
 
@@ -61,9 +79,7 @@ end
 
 function love.mousepressed(x, y, button)
   -- 1: right, 2: left, 3: middle, 4&5: side
-  if(getSelectedTile().objectOnTile and button == 1) then--(button == "1" and getSelectedTile().objectOnTile) then
-    print(getSelectedTile().objectOnTile.codeName)
-    if(getSelectedTile().objectOnTile.isGood) then selectedChar = getSelectedTile().objectOnTile end
-
+  if(getSelectedTile().objectOnTile and button == 1) then
+    if(getSelectedTile().objectOnTile.isGood) then getSelectedTile().objectOnTile:selectChar() end
   end
 end

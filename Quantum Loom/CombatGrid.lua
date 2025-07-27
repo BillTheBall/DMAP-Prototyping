@@ -12,7 +12,7 @@ function getSelectedTile()
   if tileX < 1 then tileX = 1 end
   if tileY > gridHeight then tileY = gridHeight end
   if tileY < 1 then tileY = 1 end
-  return combatGird[tileX][tileY]
+  return combatGrid[tileX][tileY]
 end
 
 function isTileInSquareRange(centerX, centerY, x, y, range)
@@ -35,8 +35,8 @@ function getTilesInSquareRange(centerX, centerY, range)
     for i = centerY - range, centerY + range do
         for j = centerX - range, centerX + range do
             -- Make sure we're within bounds of the grid
-            if combatGird[i] and combatGird[i][j] then
-                table.insert(tiles, combatGird[j][i])
+            if combatGrid[i] and combatGrid[i][j] then
+                table.insert(tiles, combatGrid[j][i])
                 --print("x:", i, "y:", j)
             end
         end
@@ -46,7 +46,7 @@ function getTilesInSquareRange(centerX, centerY, range)
 end
 --capital cuz load is some buildin func idk
 function CombatGrid:Load()
-  combatGird = {}
+  combatGrid = {}
   for i = 1, gridWidth do
     local combatRow = {}
     for j = 1, gridHeight do
@@ -54,11 +54,11 @@ function CombatGrid:Load()
         tile.pos = { x = i, y = j }
         table.insert(combatRow, tile)
     end
-    table.insert(combatGird, combatRow)
+    table.insert(combatGrid, combatRow)
   end
   for i = 1, gridWidth do
       for j = 1, gridHeight do
-        --print(combatGird[i][j].codeName .. " " .. j .. " " .. i)
+        --print(combatGrid[i][j].codeName .. " " .. j .. " " .. i)
       end
   end
 end
@@ -70,8 +70,8 @@ function CombatGrid:draw()
         else love.graphics.setColor(1,1,1)
        end
         --end
-        if(combatGird[i][j].objectOnTile) then
-            if(combatGird[i][j].objectOnTile.isGood) then
+        if(combatGrid[i][j].objectOnTile) then
+            if(combatGrid[i][j].objectOnTile.isGood) then
               love.graphics.setColor(0,0,1)
             else
               love.graphics.setColor(1,.5,.5)
@@ -85,7 +85,7 @@ function CombatGrid:draw()
         --end
         love.graphics.rectangle("fill", (i-1)*50, (j-1)*50, tileWidth, tileHeight)
         love.graphics.setColor(0,0,0)
-        love.graphics.print(combatGird[i][j].pos.x .. " " .. combatGird[i][j].pos.y , (i-1)*tileWidth, (j-1)*tileHeight)
+        love.graphics.print(combatGrid[i][j].pos.x .. " " .. combatGrid[i][j].pos.y , (i-1)*tileWidth, (j-1)*tileHeight)
       end
     end
 end

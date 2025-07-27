@@ -1,5 +1,6 @@
 --object_Combat is the base "class?" (idk lua that much rn), so everything that is on the grid,
 --inherets from it.
+require"card_Combat"
 object_Combat =
 {
   pos = {
@@ -36,16 +37,19 @@ end
 entety_Combat = object_Combat:new()
 entety_Combat.codeName = "abstract!"
 entety_Combat.isGood = nil
+--Current stats
 entety_Combat.currentHealth = 10
-entety_Combat.maxHealth = 20
 entety_Combat.currentSpeed = 10
-
+entety_Combat.currentShield = 0
+--Base stats
+entety_Combat.maxHealth = 20
+entety_Combat.baseSpeed = 5
 function entety_Combat:moveEntety(x,y)
   --Removes itselfs from the tile its standing on
-  combatGird[self.pos.x][self.pos.y].objectOnTile = nil
+  combatGrid[self.pos.x][self.pos.y].objectOnTile = nil
   self.pos.x = x
   self.pos.y = y
-  combatGird[self.pos.x][self.pos.y].objectOnTile = self
+  combatGrid[self.pos.x][self.pos.y].objectOnTile = self
 end
 
 function entety_Combat:dealDamage(damageToDeal, attacker)
@@ -61,12 +65,12 @@ function entety_Combat:dealDamage(damageToDeal, attacker)
   end
 
 end
-function entety_Combat:heal(amountToHeal)
-  if(damageToDeal > 0) then
+function entety_Combat:heal(healAmount)
+  if(healAmount > 0) then
     --if heal is 0 or less, nothing happens
-    self.currentHealth = self.currentHealth + amountToHeal
+    self.currentHealth = self.currentHealth + healAmount
     if(self.currentHealth > self.maxHealth) then
-      self.currentHealth = slef.maxHealth
+      self.currentHealth = self.maxHealth
     end
   end
 end
@@ -80,21 +84,68 @@ char_Combat = entety_Combat:new()
 char_Combat.isGood = true
 char_Combat.codeName = "char"
 
-char_Combat.fullDeck = {}
-char_Combat.currentDeck = {}
-char_Combat.currentGY = {}
-char_Combat.currentHand = {}
-
+--char_Combat.fullDeck = {}
+--char_Combat.currentDeck = {}
+--char_Combat.currentGY = {}
+--char_Combat.currentHand = {}
+--char_Combat.cardToBePlayed = nil
 function char_Combat:shuffleDeck()
   for i = #self.currentDeck, 2, -1 do
     local j = math.random(i)
     self.currentDeck[i], self.currentDeck[j] = self.currentDeck[j], self.currentDeck[i]
   end
 end
+function char_Combat:drawCard(drawAmount)
+  for i = 1, drawAmount do
+    table.insert(self.currentHand, self.currentDeck[1])
+    table.remove(self.currentDeck, 1)
+  end
+end
+function char_Combat:selectChar()
+  --If you switch while planning to play a card, this prevents issues with it
+  selectedChar.cardToBePlayer = nil
+  selectedChar = getSelectedTile().objectOnTile
+end
+function char_Combat:getDebugText()
+  fullDeckList = ""
+  currentDeckList = ""
+  currentHandList = ""
+  for i=1, #self.fullDeck do
+    fullDeckList = fullDeckList .. self.fullDeck[i].codeName .. "\n"
+  end
+  for i=1, #self.currentDeck do
+    currentDeckList = currentDeckList .. self.currentDeck[i].codeName .. "\n"
+  end  
+  for i=1, #self.currentHand do
+    currentHandList = currentHandList .. self.currentHand[i].codeName .. "\n"
+  end
+  return "Code Name: " .. self.codeName .. "\n" ..
+         "Current Health: " .. self.currentHealth .. "\tMax Health: " .. self.maxHealth .. "\n" ..
+         "Current Speed: " .. self.currentSpeed .. "\tBase Speed: " .. self.baseSpeed .. "\n" ..
+         "Current Shield: " .. self.currentShield .. "\n\n" .. 
+         "Full Deck in Order: \n" .. fullDeckList .. "\n" ..
+         "Current Deck in Order: \n" .. currentDeckList .. "\n" ..
+         "Current Hand in Order: \n" .. currentHandList .. "\n" 
+end
 
 --char_Tank is a class for the tank char. Since this is a prototype, i don't have a name for them yet..
 char_Tank = char_Combat:new()
+char_Tank.codeName = "tank"
 char_Tank.fullDeck = 
 {
-    
+  move_Card:new(),
+  handGranade_Card:new()
 }
+char_Tank.currentDeck = {unpack(char_Tank.fullDeck)}
+char_Tank.currentHand = {}
+--This will prob be that druid droid char idk
+char_Support = char_Combat:new()
+char_Support.codeName = "support"
+char_Support.fullDeck = 
+{
+  move_Card:new(),
+  move_Card:new(),
+  quickHeal_Card:new()
+}
+char_Support.currentDeck = {unpack(char_Support.fullDeck)}
+char_Support.currentHand = {}

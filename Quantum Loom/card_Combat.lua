@@ -27,9 +27,7 @@ handGranade_Card = baseCard:new()
 handGranade_Card.codeName = "kaboom"
 function handGranade_Card:isTargetValid()
   local range = 2
-  print("called")
-  print("valid:",isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, getSelectedTile().pos.x, getSelectedTile().pos.y, 2) )
-  return isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, getSelectedTile().pos.x, getSelectedTile().pos.y, 2)
+  return isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, getSelectedTile().pos.x, getSelectedTile().pos.y, range)
 end
 function handGranade_Card:onPlay()
   local areaDamage = 10
@@ -53,3 +51,16 @@ function move_Card:onPlay()
   selectedChar:moveEntety(getSelectedTile().pos.x, getSelectedTile().pos.y)
 end
 
+quickHeal_Card = baseCard:new()
+quickHeal_Card.codeName = "quickHeal"
+
+function quickHeal_Card:isTargetValid()
+  local range = 4
+  --Don't change the order. We are saving 1 if statment like this :stonks:
+  return isTileInSquareRange(selectedChar.pos.x, selectedChar.pos.y, getSelectedTile().pos.x, getSelectedTile().pos.y, range) and getSelectedTile().objectOnTile and getSelectedTile().objectOnTile.isGood
+end
+
+function quickHeal_Card:onPlay()
+  local healAmount = 3
+  combatGrid[getSelectedTile().pos.x][getSelectedTile().pos.y].objectOnTile:heal(healAmount)
+end
