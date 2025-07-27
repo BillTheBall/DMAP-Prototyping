@@ -1,59 +1,100 @@
 mainmenu = {}
 
+local hoveringoverplay = false
+local hoveringoveroptions = false
+local hoveringoverquit = false
+local hoveringoveryotubue = false
+local hoveringoverdiscord = false
 function mainmenu:load()
-    --Variables--
-    local ScreenWidth = love.graphics.getWidth()
-    local ScreenHeight = love.graphics.getHeight()
-    local MainButtonWidth = 300
-    local MainButtonHeight = 100
-    MouseX = 1
-    MouseY = 0
-    BeatX = ScreenWidth - ScreenWidth/2 - MainButtonWidth + 150
-    BeatX2 = ScreenWidth - ScreenWidth/2 + 150
-    BeatY = ScreenHeight - ScreenHeight/2 - 50
-    BeatY2 = ScreenHeight - ScreenHeight/2 + MainButtonHeight - 50
-    ButtonClickedDisabled = false
     --World Stuffs--
     --Libraries--
-    wf = require "windfield"
-    world = wf.newWorld(0, 0)
-    world:addCollisionClass('Everything')
-    world:addCollisionClass('Reorient')
-    world:addCollisionClass('Fixed')
-
-    world:addCollisionClass('TriggerBeatScoreZone1', {ignores = {'TriggerBeatScoreZone1'}})
-    world:addCollisionClass('TriggerBeatScoreZone2', {ignores = {'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2'}})
-    world:addCollisionClass('TriggerBeatScoreZone3', {ignores = {'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2', 'TriggerBeatScoreZone3'}})
-    world:addCollisionClass('TriggerBeatScoreZone4', {ignores = {'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2', 'TriggerBeatScoreZone3', 'TriggerBeatScoreZone4'}})
-    world:addCollisionClass('TriggerBeatScoreZone5', {ignores = {'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2', 'TriggerBeatScoreZone3', 'TriggerBeatScoreZone4', 'TriggerBeatScoreZone5'}})
-    world:addCollisionClass('TriggerBeatScoreZone6', {ignores = {'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2', 'TriggerBeatScoreZone3', 'TriggerBeatScoreZone4', 'TriggerBeatScoreZone5', 'TriggerBeatScoreZone6'}})
-    world:addCollisionClass('TriggerBeat', {ignores = {'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2', 'TriggerBeatScoreZone3', 'TriggerBeatScoreZone4', 'TriggerBeatScoreZone5', 'TriggerBeatScoreZone6'}})
-    world:addCollisionClass('TriggerBeatR')
-    world:addCollisionClass('TriggerBeatL')
-    world:addCollisionClass('Beat', {ignores = {'Reorient', 'TriggerBeat', 'TriggerBeatR', 'TriggerBeatL', 'Beat', 'TriggerBeatScoreZone1', 'TriggerBeatScoreZone2', 'TriggerBeatScoreZone3', 'TriggerBeatScoreZone4', 'TriggerBeatScoreZone5', 'TriggerBeatScoreZone6'}})
-
-    Beat = world:newRectangleCollider(BeatX, BeatY, MainButtonWidth, MainButtonHeight)
 end
 
 function mainmenu:update(dt)
+
     MouseX = love.mouse.getX()
     MouseY = love.mouse.getY()
 
-    if MouseX > BeatX and MouseX < BeatX2 and MouseY > BeatY and MouseY < BeatY2 then
+    if MouseX > 820 and MouseX < 1100 and MouseY > 380 and MouseY < 480 then
+        hoveringoverplay = true
         if love.mouse.isDown(1) and not ButtonClickedDisabled then
+            Beats:load()
+            Beats:reset()
+            initiatedscene1 = 0
             Scene = 1
             ButtonClickedDisabled = true
         end
+    else
+        hoveringoverplay = false
+    end
+    if MouseX > 735 and MouseX < 1175 and MouseY > 490 and MouseY < 585 then
+        hoveringoveroptions = true
+        if love.mouse.isDown(1) and not ButtonClickedDisabled then
+            Scene = 3
+            ButtonClickedDisabled = true
+        end
+    else
+        hoveringoveroptions = false
+    end
+        if MouseX > 835 and MouseX < 1075 and MouseY > 600 and MouseY < 710 then
+        hoveringoverquit = true
+        if love.mouse.isDown(1) and not ButtonClickedDisabled then
+            love.event.quit()
+            ButtonClickedDisabled = true
+        end
+    else
+        hoveringoverquit = false
     end
 
+    if MouseX > 1600 and MouseX < 1765 and MouseY > 920 and MouseY < 1080 then
+        hoveringoveryotubue = true
+        if love.mouse.isDown(1) and not ButtonClickedDisabled then
+            love.system.openURL("https://www.youtube.com/@BillTheBallBTB")
+            ButtonClickedDisabled = true
+        end
+    else
+        hoveringoveryotubue = false
+    end
+
+    if MouseX > 1765 and MouseX < 1920 and MouseY > 920 and MouseY < 1080 then
+        hoveringoverdiscord = true
+        if love.mouse.isDown(1) and not ButtonClickedDisabled then
+            love.system.openURL("https://discord.gg/9mXMC8eGaH")
+            ButtonClickedDisabled = true
+        end
+    else
+        hoveringoverdiscord = false
+    end
     if counter < 1 then
         ButtonClickedDisabled = false
     end
-        world:update(dt)
+        
 end
 
 function mainmenu:draw()
-    world:draw()
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+    love.graphics.draw(Menu, 0, 0, 0, 6)
+    if hoveringoverplay then
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(Playhead, 794, 420, 0, 6)
+    end
+    if hoveringoveroptions then
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(Optionshead, 706, 525, 0, 6)
+    end
+    if hoveringoverquit then
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(Quithead, 800, 635, 0, 6)
+    end
+
+    if hoveringoveryotubue then
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(Yotubuehead, 1670, 888, 0, 6)
+    end
+    if hoveringoverdiscord then
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(Discordhead, 1820, 888, 0, 6)
+    end
     love.graphics.print("MouseX: " ..tostring(love.mouse.getX()).. " MouseY: " ..tostring(love.mouse.getY()), 10, 60)
-    love.graphics.print(Scene, 10, 85)
 end

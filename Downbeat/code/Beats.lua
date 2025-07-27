@@ -4,7 +4,7 @@ local angle
 local bulletDx = 0
 local bulletDy = 0
 function Beats:load()
-	bulletSpeed = 6525
+	bulletSpeed = 6525 * Gamespeed
 	
 	bullets = {}
 	player = {x=250, y=250, width=15, height=15}
@@ -128,12 +128,42 @@ function Beats:update(dt)
         end
         if clickedDown2 then
             if v.targettedR then
+                if v.score1 then
+                    Score = Score + ((MaximumScore/ClicksRequired) * 0.1)
+                    if v.score2 then
+                        Score = Score + ((MaximumScore/ClicksRequired) * 0.2)
+                        if v.score3 then
+                            Score = Score + ((MaximumScore/ClicksRequired) * 0.3)
+                            if v.score4 then
+                                Score = Score + ((MaximumScore/ClicksRequired) * 0.3)
+                                if v.score5 then
+                                    Score = Score + ((MaximumScore/ClicksRequired) * 0.1)
+                                end
+                            end
+                        end
+                    end
+                end
                 v.collider:destroy()
                 table.remove(bullets, i)
             end
         end
         if clickedDown1 then
             if v.targettedL then
+                if v.score1 then
+                    Score = Score + ((MaximumScore/ClicksRequired) * 0.1)
+                    if v.score2 then
+                        Score = Score + ((MaximumScore/ClicksRequired) * 0.2)
+                        if v.score3 then
+                            Score = Score + ((MaximumScore/ClicksRequired) * 0.3)
+                            if v.score4 then
+                                Score = Score + ((MaximumScore/ClicksRequired) * 0.3)
+                                if v.score5 then
+                                    Score = Score + ((MaximumScore/ClicksRequired) * 0.1)
+                                end
+                            end
+                        end
+                    end
+                end
                 v.collider:destroy()
                 table.remove(bullets, i)
             end
@@ -154,6 +184,19 @@ function Beats:draw()
 	for i,v in ipairs(bullets) do
 		love.graphics.circle("line", v.collider:getX(), v.collider:getY(), 75)
 	end
+end
+
+function Beats:reset()
+    -- Destroy all beat colliders
+    for _, v in ipairs(bullets) do
+        if v.collider then v.collider:destroy() end
+    end
+
+    -- Clear all scene variables
+    bullets = {}
+    player = {x=250, y=250, width=15, height=15}
+    straightened = false
+    timed = 0
 end
 
 function Beats:spawnBullet(direction)

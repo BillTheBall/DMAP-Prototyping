@@ -1,11 +1,13 @@
 function love.load()
     -- Libraries --
     wf = require "windfield"
+    am = require "code.actualmainmenu"
     mm = require "code.mainmenu"
+    op =  require "code.options"
     ry = require "code.rhythmgame"
     bb =  require "code.Beats"
-
     -- Variables --
+    KeyLayout = "ASD"
     tickPeriod = 1/32 -- seconds per tick
     accumulator = 0.0
     counter = 0
@@ -21,10 +23,32 @@ function love.load()
     countered3 = 0
     Scene = 0
     love.graphics.setDefaultFilter("nearest", "nearest")
-    
+        
+    Watermark = love.graphics.newImage("Artisting/BTBStudiosIntroScreenWatermark.png")
+
+    Menu = love.graphics.newImage("Artisting/BTBStudiosIntroScreenk.png")
+    Playhead = love.graphics.newImage("Artisting/PlayArrow.png")
+    Optionshead = love.graphics.newImage("Artisting/OptionsArrow.png")
+    Quithead = love.graphics.newImage("Artisting/QuitArrow.png")
+    Discordhead = love.graphics.newImage("Artisting/DiscordArrow.png")
+    Yotubuehead = love.graphics.newImage("Artisting/YouTubeArrow.png")
+
+    Options = love.graphics.newImage("Artisting/BTBStudiosOptionsScreen.png")
+    Quitheadflipped = love.graphics.newImage("Artisting/QuitArrowFlipped.png")
+    ASD = love.graphics.newImage("Artisting/ASD.png")
+    One23 = love.graphics.newImage("Artisting/123.png")
+    Eight90 = love.graphics.newImage("Artisting/890.png")
+    JKL = love.graphics.newImage("Artisting/JKL.png")
+    ZXC = love.graphics.newImage("Artisting/ZXC.png")
+    Arrows = love.graphics.newImage("Artisting/Arrows.png")
+    LayoutArrow = love.graphics.newImage("Artisting/LayoutArrowNormal.png")
+    LayoutArrowFlipped = love.graphics.newImage("Artisting/LayoutArrow.png")
+
+    actualmainmenu:load()
     mainmenu:load() 
     rhythmlevelone:load() 
     Beats:load()
+    options:load()
 end
 
 -- Nope. Don't even ask me how, this just runs the logic at a consistent rate --
@@ -39,10 +63,14 @@ function love.update(dt)
     accumulator = accumulator + 1 * dt
     if accumulator >= tickPeriod then
         if Scene == 0 then
-            mainmenu:update(dt) 
+            actualmainmenu:update(dt)
         elseif Scene == 1 then
             rhythmlevelone:update(dt) 
             Beats:update(dt)
+        elseif Scene == 2 then
+            mainmenu:update(dt) 
+        elseif Scene == 3 then
+            options:update(dt)
         end
 
     if not abilitytoClickDown1  then
@@ -81,27 +109,114 @@ function love.update(dt)
     end
 
     function love.mousepressed( x, y, button, istouch, presses )
-    if button == 1 and abilitytoClickDown1 then
-        clickedDown1 = true
-        abilitytoClickDown1 = false
-    elseif button == 2 and abilitytoClickDown2 then
-        clickedDown2 = true
-        abilitytoClickDown2 = false
-    elseif button == 3 and abilitytoClickDown3 then
-        clickedDown3 = true
-        abilitytoClickDown3 = false
+        if button == 1 and abilitytoClickDown1 then
+            clickedDown1 = true
+            abilitytoClickDown1 = false
+        elseif button == 2 and abilitytoClickDown2 then
+            clickedDown2 = true
+            abilitytoClickDown2 = false
+        elseif button == 3 and abilitytoClickDown3 then
+            clickedDown3 = true
+            abilitytoClickDown3 = false
+        end
     end
-end
+    -- Clicked Down 1 = Left
+    -- Clicked Down 2 = Right
+    -- Clicked Down 3 = Middle
+
+    function love.keypressed(key)
+        if KeyLayout == "ASD" then
+            if key == "a" and abilitytoClickDown1 then
+                clickedDown1 = true
+                abilitytoClickDown1 = false
+            elseif key == "d" and abilitytoClickDown2 then
+                clickedDown2 = true
+                abilitytoClickDown2 = false
+            elseif key == "s" and abilitytoClickDown3 then
+                clickedDown3 = true
+                abilitytoClickDown3 = false
+            end 
+        end
+
+        if KeyLayout == "123" then
+            if key == "1" and abilitytoClickDown1 then
+                clickedDown1 = true
+                abilitytoClickDown1 = false
+            elseif key == "3" and abilitytoClickDown2 then
+                clickedDown2 = true
+                abilitytoClickDown2 = false
+            elseif key == "2" and abilitytoClickDown3 then
+                clickedDown3 = true
+                abilitytoClickDown3 = false
+            end 
+        end
+
+        if KeyLayout == "ZXC" then
+            if key == "Z" and abilitytoClickDown1 then
+                clickedDown1 = true
+                abilitytoClickDown1 = false
+            elseif key == "C" and abilitytoClickDown2 then
+                clickedDown2 = true
+                abilitytoClickDown2 = false
+            elseif key == "X" and abilitytoClickDown3 then
+                clickedDown3 = true
+                abilitytoClickDown3 = false
+            end 
+        end
+
+        if KeyLayout == "JKL" then
+            if key == "j" and abilitytoClickDown1 then
+                clickedDown1 = true
+                abilitytoClickDown1 = false
+            elseif key == "l" and abilitytoClickDown2 then
+                clickedDown2 = true
+                abilitytoClickDown2 = false
+            elseif key == "k" and abilitytoClickDown3 then
+                clickedDown3 = true
+                abilitytoClickDown3 = false
+            end 
+        end
+
+        if KeyLayout == "890" then
+            if key == "8" and abilitytoClickDown1 then
+                clickedDown1 = true
+                abilitytoClickDown1 = false
+            elseif key == "0" and abilitytoClickDown2 then
+                clickedDown2 = true
+                abilitytoClickDown2 = false
+            elseif key == "9" and abilitytoClickDown3 then
+                clickedDown3 = true
+                abilitytoClickDown3 = false
+            end 
+        end
+
+        if KeyLayout == "<->" then
+            if key == "left" and abilitytoClickDown1 then
+                clickedDown1 = true
+                abilitytoClickDown1 = false
+            elseif key == "right" and abilitytoClickDown2 then
+                clickedDown2 = true
+                abilitytoClickDown2 = false
+            elseif key == "down" and abilitytoClickDown3 then
+                clickedDown3 = true
+                abilitytoClickDown3 = false
+            end 
+        end
+    end
 end
 
 
 
 function love.draw()
     if Scene == 0 then 
-        mainmenu:draw()
+        actualmainmenu:draw()
     elseif Scene == 1 then
         rhythmlevelone:draw() 
         Beats:draw()
+    elseif Scene == 2 then
+        mainmenu:draw()
+    elseif Scene == 3 then
+        options:draw()
     end
 
     love.graphics.setColor(1, 1, 1)
