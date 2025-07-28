@@ -16,6 +16,7 @@ function Board.Create(size, external, interact, scale)
     self.scale = scale or 16
 
     self.matrix = Matrix.Create()
+    self.timer = 0
 
     for x = 0, self.size + self.external do
         for y = 0, self.size + self.external do
@@ -27,6 +28,7 @@ function Board.Create(size, external, interact, scale)
 end
 
 function Board:draw()
+    self.timer = self.timer + 0.1
     for x = 0, self.size + self.external do
         for y = 0, self.size + self.external do
             local px = self.position.x + x * self.scale
@@ -34,7 +36,7 @@ function Board:draw()
             local tile = self.matrix:get(x, y)
             if tile.visible then
                 if (x + y) % 2 == 1 then
-                    love.graphics.draw(Sprites[1], px, py)
+                    Sprites[1]:draw(self.timer, px, py)
                 else
                     love.graphics.draw(Sprites[6], px, py)
                 end
