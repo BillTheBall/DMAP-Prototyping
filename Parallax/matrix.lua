@@ -8,9 +8,10 @@ function Matrix.Create()
 end
 
 function Matrix:get(i, j)
-    self[i] = self[i] or {}
-
-    return self[i][j]
+    if self[i] ~= nil then
+        return self[i][j]
+    end
+    return nil
 end
 
 function Matrix:set(i, j, value)

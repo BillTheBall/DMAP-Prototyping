@@ -1,12 +1,12 @@
 local Tile = {}
 Tile.__index = Tile
 
-function Tile.Create(x, y, side)
+function Tile.Create(visible)
     local self = setmetatable({}, Tile)
     
-    self.x = x or 0
-    self.y = y or 0
-    self.side = side or -1
+    self.visible = visible or false
+    self.player = -1
+    self.hover = false
 
     return self
 end
