@@ -1,13 +1,15 @@
-
-
+ALSOFT_DRIVERS=pipewire
 function love.load()
     -- Libraries --
+    MYfont = love.graphics.newFont( "Artisting/pixelated.TTF", 48 )
+    love.graphics.setFont(MYfont)
     wf = require "windfield"
     am = require "code.actualmainmenu"
     mm = require "code.mainmenu"
     op =  require "code.options"
     ry = require "code.rhythmgame"
     bb =  require "code.Beats"
+    lc =  require "code.levelchooser"
     -- Variables --
     KeyLayout = "ASD"
     tickPeriod = 1/32 -- seconds per tick
@@ -47,20 +49,25 @@ function love.load()
     LayoutArrow = love.graphics.newImage("Artisting/LayoutArrowNormal.png")
     LayoutArrowFlipped = love.graphics.newImage("Artisting/LayoutArrow.png")
 
-    source = love.audio.newSource("StabbedAll.mp3", "stream")
+    LevelUnoMenu = love.graphics.newImage("Artisting/BTBStudiosLevelChoose.png")
+    PlayHead2D = love.graphics.newImage("Artisting/PlayArrow2.png")
+    
+    Chip = love.graphics.newImage("Artisting/CasinoChip.png")
+    LevelUno = love.graphics.newImage("Artisting/BTBStudiosLevelOne.png")
+
+    source = love.audio.newSource("Music/StabbedAll.wav", "stream")
 
     actualmainmenu:load()
     mainmenu:load() 
     rhythmlevelone:load() 
     Beats:load()
     options:load()
+    levelchooser:load()
 end
 
 -- Nope. Don't even ask me how, this just runs the logic at a consistent rate --
 function love.update(dt)
-    if not source:isPlaying( ) then
-		love.audio.play( source )
-	end
+
     timer = timer + dt
     if timer > 1 then
         counter = 0
@@ -79,6 +86,8 @@ function love.update(dt)
             mainmenu:update(dt) 
         elseif Scene == 3 then
             options:update(dt)
+        elseif Scene == 4 then
+            levelchooser:update(dt)
         end
 
     if not abilitytoClickDown1  then
@@ -225,9 +234,9 @@ function love.draw()
         mainmenu:draw()
     elseif Scene == 3 then
         options:draw()
+    elseif Scene == 4 then
+        levelchooser:draw()
     end
 
     love.graphics.setColor(1, 1, 1)
-    love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
-    love.graphics.print(tostring(counter), 10, 35)
 end

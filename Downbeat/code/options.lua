@@ -81,7 +81,4 @@ function options:draw()
     if KeyLayout == "<->" then
         love.graphics.draw(Arrows, 385, 575, 0, 6)
     end
-
-
-    love.graphics.print("MouseX: " ..tostring(love.mouse.getX()).. " MouseY: " ..tostring(love.mouse.getY()), 10, 60)
 end

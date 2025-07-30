@@ -17,10 +17,11 @@ function mainmenu:update(dt)
     if MouseX > 820 and MouseX < 1100 and MouseY > 380 and MouseY < 480 then
         hoveringoverplay = true
         if love.mouse.isDown(1) and not ButtonClickedDisabled then
+
             Beats:load()
             Beats:reset()
             initiatedscene1 = 0
-            Scene = 1
+            Scene = 4
             ButtonClickedDisabled = true
         end
     else
@@ -95,5 +96,4 @@ function mainmenu:draw()
         love.graphics.setColor(1, 1, 1)
         love.graphics.draw(Discordhead, 1820, 888, 0, 6)
     end
-    love.graphics.print("MouseX: " ..tostring(love.mouse.getX()).. " MouseY: " ..tostring(love.mouse.getY()), 10, 60)
 end

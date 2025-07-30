@@ -4,7 +4,7 @@ local angle
 local bulletDx = 0
 local bulletDy = 0
 function Beats:load()
-	bulletSpeed = 6525 * Gamespeed
+	bulletSpeed = 10525 * Gamespeed
 	
 	bullets = {}
 	player = {x=250, y=250, width=15, height=15}
@@ -180,9 +180,8 @@ end
 
 
 function Beats:draw()
-	love.graphics.setColor(1, 0, 0)
 	for i,v in ipairs(bullets) do
-		love.graphics.circle("line", v.collider:getX(), v.collider:getY(), 75)
+		love.graphics.draw(Chip, v.collider:getX()-(16*6), v.collider:getY()-(16*6), 0, 6)
 	end
 end
 
