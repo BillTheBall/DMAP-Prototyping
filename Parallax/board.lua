@@ -1,131 +1,188 @@
-local Options = require 'options'
-local Tile = require 'tile'
 local Matrix = require 'matrix'
-local Sprites = require 'sprites'
+local Tile = require 'tile'
 
+---@class Board
 local Board = {}
 Board.__index = Board
 
-function Board.Create(size, external, interact, scale)
-    local self = setmetatable({}, Board)
+---@param size number
+---@param external number
+---@param inline number
+---@param scale number
+---@param x number
+---@param y number
+---@param zoom number
+---@param hover boolean
+---@return Board
+local function new(size, external, inline, scale, x, y, zoom, hover)
+    local folder = 'images/board/'
+    local mt = {
+        x = x or 0, y = y or 0,
+        size = size or 9, external = external or 1,
+        scale = scale or 16,
+        fullsize = (size or 9) + (external or 1) * 2,
+        matrix = Matrix(),
+        inline = inline or 6,
+        zoom = zoom or 1,
+        hover = hover or false,
+        folder = folder,
+        imageBase1 = love.graphics.newImage(folder..'Base1.png'),
+        imageBase2 = love.graphics.newImage(folder..'Base2.png'),
+        imageBase3 = love.graphics.newImage(folder..'Base3.png'),
+        imageFloat = love.graphics.newImage(folder..'Float.png'),
+        imageHover = love.graphics.newImage(folder..'Hover.png'),
+        imageHoverFloat = love.graphics.newImage(folder..'HoverFloat.png'),
+        imageDot = love.graphics.newImage(folder..'Dot.png'),
+        imageCross = love.graphics.newImage(folder..'Cross.png')
+    }
 
-    self.position = {x = 0, y = 0}
-    self.size = size or 9
-    self.external = external or 1
-    self.interact = interact or false
-    self.scale = scale or 16
-
-    self.matrix = Matrix.Create()
-    self.timer = 0
-
-    for x = 0, self.size + self.external do
-        for y = 0, self.size + self.external do
-            self.matrix:set(x, y, Tile.Create(((x > 0) and (x < self.size + self.external)) and ((y > 0) and (y < self.size + self.external))))
+    for x = 0, mt.fullsize - 1 do
+        for y = 0, mt.fullsize - 1 do
+            local visible = (x >= mt.external and y >= mt.external and x < mt.fullsize - mt.external and y < mt.fullsize - mt.external)
+            mt.matrix:set(x, y, Tile(visible))
         end
     end
 
-    return self
+    return setmetatable(mt, Board)
+end
+
+---@param dx number
+---@param dy number
+function Board:move(dx, dy)
+    self.x, self.y = self.x + dx, self.y + dy
 end
 
 function Board:draw()
-    self.timer = self.timer + 0.1
-    for x = 0, self.size + self.external do
-        for y = 0, self.size + self.external do
-            local px = self.position.x + x * self.scale
-            local py = self.position.y + y * self.scale
+    love.graphics.scale(self.zoom, self.zoom)
+    mx, my = self:toWorld(love.mouse.getX(), love.mouse.getY())
+    for x = 0, self.fullsize - 1 do
+        for y = 0, self.fullsize - 1 do
+            local imgX = self.x / self.zoom + (x - self.fullsize / 2) * self.scale
+            local imgY = self.y / self.zoom + (y - self.fullsize / 2) * self.scale
+            local pattern = (x + y) % 2
             local tile = self.matrix:get(x, y)
             if tile.visible then
-                if (x + y) % 2 == 1 then
-                    Sprites[1]:draw(self.timer, px, py)
-                else
-                    love.graphics.draw(Sprites[6], px, py)
+                if pattern == 0 then
+                    tile:draw(self.imageBase3, imgX, imgY, self.scale)
+                elseif pattern == 1 then
+                    tile:draw(self.imageBase2, imgX, imgY, self.scale)
+                elseif pattern  == 2 then
+                    tile:draw(self.imageBase3, imgX, imgY, self.scale)
                 end
-                if tile.player == 0 then
-                    love.graphics.draw(Sprites[4], px, py)
-                elseif tile.player == 1 then
-                    love.graphics.draw(Sprites[5], px, py)
+                if self.hover and x == mx and y == my then
+                    self.matrix:get(x, y):draw(self.imageHover, imgX, imgY, self.scale)
                 end
-                if tile.hover then
-                    love.graphics.draw(Sprites[2], px, py)
+                if tile.player == 1 then
+                    tile:draw(self.imageDot, imgX, imgY, self.scale)
+                elseif tile.player == 0 then
+                    tile:draw(self.imageCross, imgX, imgY, self.scale)
                 end
             else
-                love.graphics.draw(Sprites[3], px, py)
+                tile:draw(self.imageFloat, imgX, imgY, self.scale)
+                if self.hover and x == mx and y == my then
+                    self.matrix:get(x, y):draw(self.imageHoverFloat, imgX, imgY, self.scale)
+                end
             end
-            tile.hover = false
         end
     end
+    love.graphics.scale(1 / self.zoom, 1 / self.zoom)
 end
 
-function Board:move(x, y)
-    self.position.x = self.position.x + x
-    self.position.y = self.position.y + y
+---@param x number
+---@param y number
+---@return number, number
+function Board:toWorld(x, y)
+    return math.floor(((x - self.x) / self.zoom) / self.scale + self.fullsize / 2), math.floor(((y - self.y) / self.zoom) / self.scale + self.fullsize / 2)
 end
 
-function Board:inside(x, y)
-    return ((x >= 0) and (x <= self.size + self.external)) and ((y >= 0) and (y <= self.size + self.external))
-end
-
-function Board:position(x, y)
-    self.position.x = x
-    self.position.y = y
-end
-
-function Board:interact(interact)
-    self.interact = interact
-end
-
-function Board:toworld(x, y)
-    return math.floor((x - self.position.x) / self.scale), math.floor((y - self.position.y) / self.scale)
-end
-
-function Board:hover(x, y)
-    if self:inside(x, y) then
-        self.matrix:get(x, y).hover = true
-    end
-end
-
+---@param x number
+---@param y number
+---@param player number
+---@return boolean
 function Board:place(x, y, player)
-    if self:inside(x, y) then
-        local tile = self.matrix:get(x, y)
-        if tile.visible then
-            if tile.player == -1 then
-                tile.player = player
-                return true
-            end
-        end
-    end
-    return false
-end
-
-function Board:flip(x, y)
-    if self:inside(x, y) then
-        local tile = self.matrix:get(x, y)
-        if tile.visible then
-            if tile.player ~= -1 then
-                tile.player = 1 - tile.player
-                return true
-            end
-        end
-    end
-    return false
-end
-
-function Board:remove(x, y)
-    if self:inside(x, y) then
-        local tile = self.matrix:get(x, y)
-        if tile.visible then
-            tile.visible = false
+    local tile = self.matrix:get(x, y)
+    if tile ~= nil then
+        if tile.player == -1 and tile.visible then
+            tile.player = player
             return true
         end
     end
     return false
 end
 
+---@param x number
+---@param y number
+---@return boolean
+function Board:flip(x, y)
+    local tile = self.matrix:get(x, y)
+    if tile ~= nil then
+        if tile.visible and tile.player ~= -1 then
+            tile.player = 1 - tile.player
+            return true
+        end
+    end
+    return false
+end
+
+---@param x number
+---@param y number
+---@return nil
+function Board:get(x, y)
+    return self.matrix:get(x, y)
+end
+
+---@param x number
+---@param y number
+---@param aspect string
+---@param value nil
+---@return boolean
+function Board:set(x, y, aspect, value)
+    local tile = self.matrix:get(x, y)
+    if tile ~= nil then
+        tile[aspect] = value
+        return true
+    end
+    return false
+end
+
+---@param x number
+---@param y number
+---@return boolean
+function Board:remove(x, y)
+    local tile = self.matrix:get(x, y)
+    if tile ~= nil then
+        if tile.visible then
+            tile.visible = false
+            tile.player = -1
+            return true
+        end
+    end
+    return false
+end
+
+---@param x number
+---@param y number
+---@return boolean
+function Board:clear(x, y)
+    local tile = self.matrix:get(x, y)
+    if tile ~= nil then
+        if tile.visible and tile.player ~= -1 then
+            tile.player = -1
+            return true
+        end
+    end
+    return false
+end
+
+---@param x number
+---@param y number
+---@return boolean
 function Board:extend(x, y)
-    if self:inside(x, y) then
-        local tile = self.matrix:get(x, y)
+    local tile = self.matrix:get(x, y)
+    if tile ~= nil then
         if not tile.visible then
             tile.visible = true
+            tile.player = -1
             return true
         end
     end
@@ -133,18 +190,23 @@ function Board:extend(x, y)
 end
 
 function Board:update()
-    for x = 0, self.size + self.external do
+    local p0, p1 = false, false
+    for x = 0, self.fullsize - 1 do
         local count = 0
         local current = -1
-        for y = 0, self.size + self.external do
+        for y = 0, self.fullsize - 1 do
             local tile = self.matrix:get(x, y)
             if (tile.player == -1) or (not tile.visible) then
                 count = 0
             else
                 if tile.player == current then
                     count = count + 1
-                    if count >= Options.board.inline then
-                        return 'Player '..current..' won!'
+                    if count >= self.inline then
+                        if current == 1 then
+                            p1 = true
+                        else
+                            p0 = true
+                        end
                     end
                 else
                     count = 1
@@ -154,18 +216,22 @@ function Board:update()
         end
     end
 
-    for y = 0, self.size + self.external do
+    for y = 0, self.fullsize - 1 do
         local count = 0
         local current = -1
-        for x = 0, self.size + self.external do
+        for x = 0, self.fullsize - 1 do
             local tile = self.matrix:get(x, y)
             if (tile.player == -1) or (not tile.visible) then
                 count = 0
             else
                 if tile.player == current then
                     count = count + 1
-                    if count >= Options.board.inline then
-                        return 'Player '..current..' won!'
+                    if count >= self.inline then
+                        if current == 1 then
+                            p1 = true
+                        else
+                            p0 = true
+                        end
                     end
                 else
                     count = 1
@@ -175,7 +241,19 @@ function Board:update()
         end
     end
 
-    return 'Playing'
+    if p0 and p1 then
+        return 'Tie!'
+    elseif p0 then
+        return 'Player '..'1'..' won!'
+    elseif p1 then
+        return 'Player '..'2'..' won!'
+    else
+        return 'Playing'
+    end
 end
 
-return Board
+return setmetatable({ new = new }, {
+    __call = function(_, ...)
+        return new(...)
+    end
+})
