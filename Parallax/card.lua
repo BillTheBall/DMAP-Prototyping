@@ -21,7 +21,7 @@ end
 ---@param h number
 function Card:draw(image, x, y, w, h)
     if image ~= nil then
-        love.graphics.draw(image, x, y)
+        love.graphics.draw(image, x, y, 3.1415 / 16)
     else
         love.graphics.rectangle('line', x, y, w, h)
     end
@@ -41,6 +41,18 @@ function Card:use(board, x, y)
     elseif self.class == 2 then
         for i = 0, 2 do
             success = board:clear(x, y + i) or success
+        end
+    elseif self.class == 3 then
+        success = board:extend(x, y)
+    elseif self.class == 4 then
+        success = board:remove(x, y)
+    elseif self.class == 5 then
+        for i = 0, 2 do
+            success = board:flip(x + i, y) or success
+        end
+    elseif self.class == 6 then
+        for i = 0, 2 do
+            success = board:flip(x, y + i) or success
         end
     end
     return success

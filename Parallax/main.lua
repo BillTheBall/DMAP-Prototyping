@@ -4,45 +4,31 @@ local Card = require 'card'
 
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
+    font = love.graphics.newFont('images/Minecraft_1.1.ttf')
+    love.graphics.setFont(font)
     width = love.graphics.getWidth()
     height = love.graphics.getHeight()
     board = Board(9, 1, 6, 16, width / 2, height / 2, 4, true)
     turn = 1
-    decks = {[0] = Deck(10, 0), [1] = Deck(10, 1)}
-    decks[0]:insert(Card(0))
-    decks[0]:insert(Card(1))
-    decks[0]:insert(Card(2))
-    decks[0]:insert(Card(0))
-    decks[0]:insert(Card(1))
-    decks[0]:insert(Card(2))
-    decks[0]:insert(Card(0))
-    decks[0]:insert(Card(1))
-    decks[0]:insert(Card(2))
-
-    decks[1]:insert(Card(0))
-    decks[1]:insert(Card(1))
-    decks[1]:insert(Card(2))
-    decks[1]:insert(Card(0))
-    decks[1]:insert(Card(1))
-    decks[1]:insert(Card(2))
-    decks[1]:insert(Card(0))
-    decks[1]:insert(Card(1))
-    decks[1]:insert(Card(2))
-
+    decks = {[0] = Deck(9, 0), [1] = Deck(9, 1)}
+    for i = 1, 9 do
+        decks[0]:insert(Card(math.random(0, 6)))
+        decks[1]:insert(Card(math.random(0, 6)))
+    end
     text = {[1] = 'Dot', [0] = 'Cross'}
 end
 
 function love.draw()
-    board:draw()
-    decks[0]:draw(width / 2, 0, 16, 4)
-    decks[1]:draw(width / 2, height - 128, 16, 4)
     love.graphics.print('x'..love.mouse.getX()..' y'..love.mouse.getY())
     local px, py = board:toWorld(love.mouse.getX(), love.mouse.getY())
     love.graphics.print('x'..px..' y'..py, 0, 15)
     love.graphics.print(board:update(), 0, 30)
     love.graphics.print('FPS: '..love.timer.getFPS(), 0, 45)
     love.graphics.print('Player: '..text[turn], 0, 60)
-    love.graphics.print('LeftMouse: place\nRightMouse: use card', 0, 75)
+    love.graphics.print('LeftMouse: place\nRightMouse: use card\nEscape to close', 0, 75)
+    board:draw()
+    decks[0]:draw(width / 2, 0, 14, 4)
+    decks[1]:draw(width / 2, height - 128, 14, 4)
 end
 
 function love.keypressed(key)
