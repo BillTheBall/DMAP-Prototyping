@@ -1,6 +1,15 @@
 ---@class Card
 local Card = {}
 Card.__index = Card
+local prices = {
+    [0] = 9,
+    [1] = 7,
+    [2] = 7,
+    [3] = 5,
+    [4] = 5,
+    [5] = 11,
+    [6] = 11
+}
 
 ---@param class number
 ---@param level number
@@ -8,7 +17,7 @@ Card.__index = Card
 local function new(class, level)
     local mt = {
         class = class or 0,
-        level = level or 0
+        level = level or 0,
     }
 
     return setmetatable(mt, Card)
@@ -30,8 +39,12 @@ end
 ---@param board Board
 ---@param x number
 ---@param y number
-function Card:use(board, x, y)
+function Card:use(board, x, y, mana)
     local success = false
+    local difference = 0
+    if mana < prices[self.class] then
+        return false, 0
+    end
     if self.class == 0 then
         success = board:flip(x, y)
     elseif self.class == 1 then
@@ -55,7 +68,14 @@ function Card:use(board, x, y)
             success = board:flip(x, y + i) or success
         end
     end
-    return success
+    if success then
+        difference = prices[self.class]
+    end
+    return success, difference
+end
+
+function Card:getPrice()
+    return prices[self.class]
 end
 
 return setmetatable({ new = new }, {

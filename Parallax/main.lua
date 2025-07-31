@@ -4,7 +4,7 @@ local Card = require 'card'
 
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
-    font = love.graphics.newFont('images/Minecraft_1.1.ttf')
+    font = love.graphics.newFont('images/fonts/pixelated.ttf', 16)
     love.graphics.setFont(font)
     width = love.graphics.getWidth()
     height = love.graphics.getHeight()
@@ -15,7 +15,7 @@ function love.load()
         decks[0]:insert(Card(math.random(0, 6)))
         decks[1]:insert(Card(math.random(0, 6)))
     end
-    text = {[1] = 'Dot', [0] = 'Cross'}
+    text = {[1] = 'P2 (Dot)', [0] = 'P1 (Cross)'}
 end
 
 function love.draw()
@@ -25,7 +25,7 @@ function love.draw()
     love.graphics.print(board:update(), 0, 30)
     love.graphics.print('FPS: '..love.timer.getFPS(), 0, 45)
     love.graphics.print('Player: '..text[turn], 0, 60)
-    love.graphics.print('LeftMouse: place\nRightMouse: use card\nEscape to close', 0, 75)
+    love.graphics.print('LeftMouse: place\nRightMouse: use card\nEscape to close\nP1 Mana: '..decks[0].mana..'\nP2 Mana: '..decks[1].mana..'\n1-9 to choose card', 0, 75)
     board:draw()
     decks[0]:draw(width / 2, 0, 14, 4)
     decks[1]:draw(width / 2, height - 128, 14, 4)
@@ -59,20 +59,10 @@ function love.mousepressed(x, y, button)
     local px, py = board:toWorld(love.mouse.getX(), love.mouse.getY())
     if button == 1 then
         if board:place(px, py, turn) then
+            decks[turn].mana = decks[turn].mana + 1
             turn = 1 - turn
         end
     elseif button == 2 then
         decks[turn]:use(board, px, py)
     end
-end
-
----@param mx number
----@param my number
----@param x number
----@param y number
----@param w number
----@param h number
----@return boolean
-local function inBox(mx, my, x, y, w, h)
-    return mx > x and mx < x + w and my > y and my < y + h
 end

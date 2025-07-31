@@ -23,7 +23,8 @@ local function new(size, player)
         imageFlipRow = love.graphics.newImage(folder..'CardFlipRow.png'),
         imageFlipColumn = love.graphics.newImage(folder..'CardFlipColumn.png'),
         lerp = 0,
-        target = 0
+        target = 0,
+        mana = 0
     }
 
     return setmetatable(mt, Deck)
@@ -59,7 +60,8 @@ function Deck:draw(x, y, dist, scale)
         elseif card.class == 6 then
             card:draw(self.imageFlipColumn, imgX, imgY, 16, 32)
         end
-        love.graphics.print(i, imgX, imgY, _, 1.5 / scale, 1.5 / scale)
+        --love.graphics.print(i, imgX, imgY, _, 1.5 / scale, 1.5 / scale)
+        love.graphics.print(card:getPrice(), imgX, imgY, _, 1.5 / scale, 1.5 / scale)
     end
     love.graphics.scale(1 / scale, 1 / scale)
 end
@@ -91,9 +93,11 @@ end
 ---@param y number
 function Deck:use(board, x, y)
     if self.current > 0 then
-        if self.cards[self.current]:use(board, x, y) then
+        local success, difference = self.cards[self.current]:use(board, x, y, self.mana)
+        if success then
             table.remove(self.cards, self.current)
             self.current = -1
+            self.mana = self.mana - difference
             return true
         end
     end
