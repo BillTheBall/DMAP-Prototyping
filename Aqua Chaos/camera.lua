@@ -12,4 +12,9 @@ function Camera.Create(x, y, zoom)
   return self
 end
 
+function Camera:Draw_Box(box)
+  x, y = self.cam:cameraCoords(box.x, box.y)
+  love.graphics.rectangle("line", x, y, box.w * self.cam.scale, box.h * self.cam.scale)
+end
+
 return Camera

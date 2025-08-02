@@ -1,11 +1,17 @@
 local Box = {}
 Box.__index = Box
 
-function Box.Create(x, y, w, h, collider, collision_manager)
+function Box.Create(x, y, w, h, collision)
   local self = setmetatable({}, Box)
   
-  self.position = { x = x, y = y}
-  self.collider = collider.Create_Static(collision_manager, 0, 0, w, h, self.position)
+  self.box = { x = x, y = y, w = w, h = h }
+  collision.world:add(
+    self.box,
+    self.box.x,
+    self.box.y,
+    self.box.w,
+    self.box.h
+  )
 
   return self
 end
