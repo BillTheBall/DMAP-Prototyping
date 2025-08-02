@@ -1,3 +1,11 @@
+--Controls:
+--1-9 to select a card in your hand (left side of the screen to see it in order) 
+--d to draw a card from the full deck
+--selecting a card colors all potential targets green
+--enter to play the card
+--left click on chars to switch
+--right click on any object (so all non empty tiles) to see info about them
+
 local miiui = require "Miiui.Miiui"
 require "object_Combat"
 require "CombatGrid"
@@ -74,4 +82,5 @@ function love.mousepressed(x, y, button)
   if(getSelectedTile().objectOnTile and button == 2) then
     inspectingObject = getSelectedTile().objectOnTile
   end
+
 end
