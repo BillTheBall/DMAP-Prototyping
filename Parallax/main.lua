@@ -1,68 +1,63 @@
-local Board = require 'board'
-local Deck = require 'deck'
-local Card = require 'card'
+local board = require 'code.board'
+--local inventory = require 'code.inventory'
+local card = require 'code.card'
+local hand = require 'code.hand'
 
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
-    font = love.graphics.newFont('images/fonts/pixelated.ttf', 16)
+    font = love.graphics.newFont('fonts/pixelated.TTF', 16)
     love.graphics.setFont(font)
     width = love.graphics.getWidth()
     height = love.graphics.getHeight()
-    board = Board(9, 1, 6, 16, width / 2, height / 2, 4, true)
-    turn = 1
-    decks = {[0] = Deck(9, 0), [1] = Deck(9, 1)}
-    for i = 1, 9 do
-        decks[0]:insert(Card(math.random(0, 6)))
-        decks[1]:insert(Card(math.random(0, 6)))
+    Board = board(9, 1, 6, width / 2, height / 2)
+    p = 0
+    HandP1 = hand(10, 0)
+    HandP2 = hand(3, 0)
+
+    for i = 1, 10 do
+        HandP1:insert(card(math.random(0, 7)))
     end
-    text = {[1] = 'P2 (Dot)', [0] = 'P1 (Cross)'}
 end
 
 function love.draw()
-    love.graphics.print('x'..love.mouse.getX()..' y'..love.mouse.getY())
-    local px, py = board:toWorld(love.mouse.getX(), love.mouse.getY())
-    love.graphics.print('x'..px..' y'..py, 0, 15)
-    love.graphics.print(board:update(), 0, 30)
-    love.graphics.print('FPS: '..love.timer.getFPS(), 0, 45)
-    love.graphics.print('Player: '..text[turn], 0, 60)
-    love.graphics.print('LeftMouse: place\nRightMouse: use card\nEscape to close\nP1 Mana: '..decks[0].mana..'\nP2 Mana: '..decks[1].mana..'\n1-9 to choose card', 0, 75)
-    board:draw()
-    decks[0]:draw(width / 2, 0, 14, 4)
-    decks[1]:draw(width / 2, height - 128, 14, 4)
+    Board.scale = 3
+    Board:draw()
+    HandP1:draw(width / 2, height - 100, 14, 5)
+    love.graphics.print('State: '..Board:update()..'\nIn hand: '..#HandP1.cards..'\nSelected: '..HandP1.selecting..'\nKey: '..HandP1.key..'\nMana: '..HandP1.mana..'\n\n1-0 Select card\nLeftMouse - place\nRightMouse - use card\nEscape - exit\nR - reset\n\nResolution: '..width..'x'..height..'\nFPS: '..love.timer.getFPS()..'\n')
+end
+
+function love.update(dt)
+    --Board:update()
+    if p == 1 then
+        while true do
+            if Board:place(math.random(0, 10), math.random(0, 10), 1) then
+                p = 0
+                break
+            end
+        end
+    end
 end
 
 function love.keypressed(key)
     if key == 'escape' then
         love.event.quit()
-    elseif key == '1' then
-        decks[turn]:select(1)
-    elseif key == '2' then
-        decks[turn]:select(2)
-    elseif key == '3' then
-        decks[turn]:select(3)
-    elseif key == '4' then
-        decks[turn]:select(4)
-    elseif key == '5' then
-        decks[turn]:select(5)
-    elseif key == '6' then
-        decks[turn]:select(6)
-    elseif key == '7' then
-        decks[turn]:select(7)
-    elseif key == '8' then
-        decks[turn]:select(8)
-    elseif key == '9' then
-        decks[turn]:select(9)
+    end
+    HandP1:select(key)
+    if key == 'r' then
+        Board:reset()
+        HandP1.mana = 0
     end
 end
 
-function love.mousepressed(x, y, button)
-    local px, py = board:toWorld(love.mouse.getX(), love.mouse.getY())
+function love.mousepressed(mx, my, button)
+    local x, y = Board:toWorld(mx, my)
     if button == 1 then
-        if board:place(px, py, turn) then
-            decks[turn].mana = decks[turn].mana + 1
-            turn = 1 - turn
+        if Board:place(x, y, p) then
+            p = 1 - p
+            HandP1.mana = HandP1.mana + 1
         end
     elseif button == 2 then
-        decks[turn]:use(board, px, py)
+        HandP1:use(Board, x, y)
+        --HandP1:insert(card(math.random(0, 7)))
     end
 end
