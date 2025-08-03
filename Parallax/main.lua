@@ -5,6 +5,7 @@ local hand = require 'code.hand'
 
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
+    ManaOrb = love.graphics.newImage('images/ManaOrb.png')
     font = love.graphics.newFont('fonts/pixelated.TTF', 16)
     love.graphics.setFont(font)
     width = love.graphics.getWidth()
@@ -23,14 +24,25 @@ function love.draw()
     Board.scale = 3
     Board:draw()
     HandP1:draw(width / 2, height - 100, 14, 5)
+    love.graphics.push()
+    love.graphics.scale(7)
+    origin(ManaOrb, width / 4 / 7, (height - height / 8) / 7)
+    love.graphics.pop()
+    love.graphics.print(HandP1.mana, width / 4 + 30, (height - height / 8) + 25, _, 2)
     love.graphics.print('State: '..Board:update()..'\nIn hand: '..#HandP1.cards..'\nSelected: '..HandP1.selecting..'\nKey: '..HandP1.key..'\nMana: '..HandP1.mana..'\n\n1-0 Select card\nLeftMouse - place\nRightMouse - use card\nEscape - exit\nR - reset\n\nResolution: '..width..'x'..height..'\nFPS: '..love.timer.getFPS()..'\n')
 end
 
 function love.update(dt)
     --Board:update()
+    local c = 0
     if p == 1 then
         while true do
+            c = c + 1
             if Board:place(math.random(0, 10), math.random(0, 10), 1) then
+                p = 0
+                break
+            end
+            if c > 1000 then
                 p = 0
                 break
             end
@@ -60,4 +72,8 @@ function love.mousepressed(mx, my, button)
         HandP1:use(Board, x, y)
         --HandP1:insert(card(math.random(0, 7)))
     end
+end
+
+function origin(image, x, y)
+    love.graphics.draw(image, x, y, _, _, _, image:getWidth() / 2, image:getHeight() / 2)
 end

@@ -11,9 +11,7 @@ local function new(size, mana)
         mana = mana or 0,
         cards = {},
         selecting = -1,
-        key = 'escape',
-        lerp = 0,
-        target = 0
+        key = ''
     }
 
     return setmetatable(mt, hand)
@@ -25,16 +23,18 @@ function hand:draw(x, y, dist, scale)
     for i = 1, #self.cards do
         local imgX = x / scale + (i - 0.5 - #self.cards / 2) * dist
         local imgY = y / scale
-        self.lerp = (self.target - self.lerp) * 0.2 + self.lerp
-        if i == self.selecting then
-            if true then
-                imgY = imgY - 8 * self.lerp
-            else
-                imgY = imgY - 8
-            end
+        if i ~= self.selecting then
+            local card = self.cards[i]
+            card:follow(imgX, imgY)
+            card:draw()
         end
-        local card = self.cards[i]
-        card:draw(imgX, imgY)
+    end
+    if self.selecting ~= -1 then
+        local imgX = x / scale + (self.selecting - 0.5 - #self.cards / 2) * dist
+        local imgY = y / scale - 8
+        local card = self.cards[self.selecting]
+        card:follow(imgX, imgY)
+        card:draw()
     end
     love.graphics.pop()
 end
@@ -91,11 +91,8 @@ function hand:select(key)
     end
     if selecting == self.selecting then
         self.selecting = -1
-        self.target = 0
     elseif selecting ~= -1 and selecting <= #self.cards then
         self.selecting = selecting
-        self.target = 1
-        self.lerp = 0
     end
 end
 

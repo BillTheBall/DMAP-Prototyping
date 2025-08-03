@@ -1,6 +1,8 @@
 local card = {}
 card.__index = card
 
+love.graphics.setDefaultFilter('nearest', 'nearest')
+
 local images = {
     Base = love.graphics.newImage('images/cards/Base.png'),
     [0] = love.graphics.newImage('images/cards/Flip.png'),
@@ -31,20 +33,28 @@ end
 local function new(class, level)
     local mt = {
         class = class or 0,
-        level = level or 0
+        level = level or 0,
+        fx = 0, fy = 0,
+        x = 0, y = 0
     }
 
     return setmetatable(mt, card)
 end
 
-function card:draw(x, y)
-    origin(images.Base, x, y)
-    origin(images[self.class], x, y)
-    love.graphics.print(self:price(), x - images.Base:getWidth() / 2 + 2, y - images.Base:getHeight() / 2, _, 0.4)
+function card:draw()
+    self.x = (self.fx - self.x) * 0.3 + self.x
+    self.y = (self.fy - self.y) * 0.3 + self.y
+    origin(images.Base, self.x, self.y)
+    origin(images[self.class], self.x, self.y)
+    love.graphics.print(self:price(), self.x - images.Base:getWidth() / 2 + 2, self.y - images.Base:getHeight() / 2, _, 0.4)
 end
 
 function card:price()
     return prices[self.class]
+end
+
+function card:follow(x, y)
+    self.fx, self.fy = x, y
 end
 
 function card:use(Board, x, y)
