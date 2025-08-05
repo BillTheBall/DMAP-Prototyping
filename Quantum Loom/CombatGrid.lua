@@ -66,7 +66,7 @@ function CombatGrid:draw()
     for i = 1, gridWidth do
       for j = 1, gridHeight do
         local spriteToDraw = tile
-        if (selectedChar.cardToBePlayed and selectedChar.cardToBePlayed:isTargetValid(i,j))then-- and (selectedChar.pos.x ~= i or selectedChar.pos.y~=j)) then 
+        if (selectedChar and selectedChar.cardToBePlayed and selectedChar.cardToBePlayed:isTargetValid(i,j))then-- and (selectedChar.pos.x ~= i or selectedChar.pos.y~=j)) then 
           love.graphics.setColor(0,1,0)
           
         else love.graphics.setColor(1,1,1)

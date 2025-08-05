@@ -8,7 +8,7 @@ object_Combat =
     y = 1,
   },
   codeName= "baseObject",
-  sprite = love.graphics.newImage("sprites/tile.png"),
+  sprite = nil,
   tags = {}
 }
 
@@ -105,19 +105,31 @@ function char_Combat:shuffleDeck()
 end
 function char_Combat:drawCard(drawAmount)
   for i = 1, drawAmount do
-    table.insert(self.currentHand, self.currentDeck[1])
-    table.remove(self.currentDeck, 1)
+    if(self.currentDeck[1]) then
+      table.insert(self.currentHand, self.currentDeck[1])
+      table.remove(self.currentDeck, 1)
+    else 
+      self:moveGYToDeck()
+    end
   end
 end
 function char_Combat:selectChar()
   --If you switch while planning to play a card, this prevents issues with it
-  selectedChar.cardToBePlayer = nil
+  if(selectedChar) then selectedChar.cardToBePlayer = nil end
   selectedChar = getSelectedTile().objectOnTile
+end
+function char_Combat:moveGYToDeck()
+  if(self.currentGY[1]) then
+    table.insert(self.currentDeck,unpack(self.currentGY))
+    self:shuffleDeck()
+    self.currentGY = {}
+  end
 end
 function char_Combat:getDebugText()
   fullDeckList = ""
   currentDeckList = ""
   currentHandList = ""
+  currentGYList = ""
   for i=1, #self.fullDeck do
     fullDeckList = fullDeckList .. self.fullDeck[i].codeName .. "\n"
   end
@@ -126,6 +138,9 @@ function char_Combat:getDebugText()
   end  
   for i=1, #self.currentHand do
     currentHandList = currentHandList .. self.currentHand[i].codeName .. "\n"
+  end  
+  for i=1, #self.currentGY do
+    currentGYList = currentGYList .. self.currentGY[i].codeName .. "\n"
   end
   return "Code Name: " .. self.codeName .. "\n" ..
          "Current Health: " .. self.currentHealth .. "\tMax Health: " .. self.maxHealth .. "\n" ..
@@ -133,27 +148,42 @@ function char_Combat:getDebugText()
          "Current Shield: " .. self.currentShield .. "\n\n" .. 
          "Full Deck in Order: \n" .. fullDeckList .. "\n" ..
          "Current Deck in Order: \n" .. currentDeckList .. "\n" ..
-         "Current Hand in Order: \n" .. currentHandList .. "\n" 
+         "Current Hand in Order: \n" .. currentHandList .. "\n" ..
+         "Current GY in Order: \n" .. currentGYList .. "\n"
 end
 
 --char_Tank is a class for the tank char. Since this is a prototype, i don't have a name for them yet..
-char_Tank = char_Combat:new()
-char_Tank.codeName = "tank"
-char_Tank.fullDeck = 
-{
-  move_Card:new(),
-  handGranade_Card:new()
-}
-char_Tank.currentDeck = {unpack(char_Tank.fullDeck)}
-char_Tank.currentHand = {}
+function char_Tank()
+    local o = char_Combat:new()
+
+    o.codeName = "tank"
+    o.fullDeck = 
+    {
+        move_Card:new(),
+        handGranade_Card:new()
+    }
+    o.currentDeck = { unpack(o.fullDeck) }
+    o.currentHand = {}
+    o.currentGY = 
+    {
+      quickHeal_Card:new()
+    }
+    return o
+end
+
 --This will prob be that druid droid char idk
-char_Support = char_Combat:new()
-char_Support.codeName = "support"
-char_Support.fullDeck = 
-{
-  move_Card:new(),
-  move_Card:new(),
-  quickHeal_Card:new()
-}
-char_Support.currentDeck = {unpack(char_Support.fullDeck)}
-char_Support.currentHand = {}
+function char_Support()
+    local o = char_Combat:new()
+
+    o.codeName = "support"
+    o.fullDeck = 
+    {
+        move_Card:new(),
+        move_Card:new(),
+        quickHeal_Card:new()
+    }
+    o.currentDeck = { unpack(o.fullDeck) }
+    o.currentHand = {}
+
+    return o
+end

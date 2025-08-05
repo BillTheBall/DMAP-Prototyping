@@ -22,7 +22,15 @@ end
 function baseCard:isTargetValid()
   error("Called baseCard:isTargetValid(). You should always use an override of isTargetValid()!")
 end
-
+function baseCard:moveFromHandToGY()
+  --print(getmetatable(selectedChar.currentHand[1]),getmetatable(self))
+  for i=1, #selectedChar.currentHand do
+    if(selectedChar.currentHand[i] == self) then
+      table.insert(selectedChar.currentGY, self)
+      table.remove(selectedChar.currentHand, i)
+    end
+  end
+end
 handGranade_Card = baseCard:new()
 handGranade_Card.codeName = "kaboom"
 function handGranade_Card:isTargetValid(x,y)
@@ -39,7 +47,7 @@ function handGranade_Card:onPlay()
     if tile.objectOnTile then
       tile.objectOnTile:dealDamage(areaDamage, selectedChar)
     end
-  end
+  end 
 end
 
 move_Card = baseCard:new()
@@ -59,6 +67,7 @@ function move_Card:isTileValid(x, y)
 end
 function move_Card:onPlay()
   selectedChar:moveEntety(getSelectedTile().pos.x, getSelectedTile().pos.y)
+  baseCard:moveFromHandToGY()
 end
 
 quickHeal_Card = baseCard:new()
